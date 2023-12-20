@@ -1,5 +1,5 @@
 <!---
-Copyright 2023 Symanto Research GmbH & Co. KG
+Copyright 2023 Genaios
 
 Licensed under the CC BY-NC-ND 4.0 License
 
