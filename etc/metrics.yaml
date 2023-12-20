@@ -1,0 +1,26 @@
+metrics_to_run: ["repetition_diversity", "simple_model", "perplexity"]
+
+# configs for each metric
+mauve:
+  batch_size: 32
+  verbose: False
+
+repetition_diversity:
+  ngrams: [2, 3, 4]
+
+simple_model:
+  folds:
+    n_splits: 5 
+  
+  feature_params:
+    char:
+      ngram_range: !!python/tuple [3, 5]
+    word:
+      ngram_range: !!python/tuple [1, 3]
+    
+  model_params:
+    class_weight: balanced 
+
+perplexity:
+  model_id: "gpt2"
+     

@@ -1,0 +1,40 @@
+# Config for everything related to dataset generation inputs
+input_config:
+    # Dataset metadata
+    domain: tweets
+    language: en
+
+    # Dataset generator parameters
+    quantity: 10
+    
+    # HuggingFace dataset params
+    dataset: tweet_eval
+    dataset_text_column: text
+    dataset_params:
+        split: train
+        name: irony
+
+    # Prompt template
+    template: >-
+        Write a tweet response to the following tweet:\n'{text}'\n\nTweet: 
+
+    # Extractor params
+    extractor: auxiliary
+    max_input_tokens: 256
+    
+# Config for model instantiation
+model_config:
+    provider: vertex
+    model_name: text-bison@001
+    api_type: COMPLETION
+    project: test-project
+    location: europe-west9
+    threads: 8
+    max_retries: 5
+
+# Decoding args
+generation_config:
+    # Ignore `max_output_tokens` to get automatic length estimation
+    # max_output_tokens: 100
+    top_p: 0.9
+    temperature: 0.6

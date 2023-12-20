@@ -1,0 +1,43 @@
+# Config for everything related to dataset generation inputs
+input_config:
+    # Dataset metadata
+    domain: stories
+    language: en
+
+    # Dataset generator parameters
+    quantity: 10
+    
+    # HuggingFace dataset params
+    dataset: roneneldan/TinyStories
+    dataset_text_column: text
+    dataset_params:
+        split: validation
+    
+    # Prompt template
+    template: >-
+        Write a fictional or creative story to entertain, evoke emotions, 
+        or convey deeper meanings following the style of literature, film, 
+        or theater. Base your story in the following entities: {entities}.\nStory: 
+    
+    # Extractor params
+    extractor: entity_list
+    max_input_tokens: 256
+
+# Config for model instantiation
+model_config:
+    provider: hf_remote
+    model_name: meta-llama/Llama-2-7b-chat-hf
+    url: https://g6vjy620o2eplyzc.us-east-1.aws.endpoints.huggingface.cloud
+    max_retries: 5
+    threads: 8
+    
+# Decoding args
+generation_config:
+    # Ignore `max_new_tokens` or `min_new_tokens` to get  automatic length estimation
+    # min_new_tokens: 5
+    # max_new_tokens: 10
+    do_sample: true
+    top_p: 0.9
+    temperature: 0.6
+    repetition_penalty: 1.0
+    return_full_text: false
