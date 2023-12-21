@@ -75,7 +75,7 @@ setup(
     include_package_data=True,
     python_requires=">=3.8.0",
     extras_require=EXTRAS_REQUIRES,
-    url="https://github.com/Genaios/Res.Pkg.TextMachina/",
+    url="https://github.com/Genaios/TextMachina",
     classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: Console",

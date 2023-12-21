@@ -220,7 +220,7 @@ It can be modified by setting `TEXT_MACHINA_CACHE_DIR` to a different path.
 ## 🤝 Contribute
 ---
 
-Feel free to contribute to ![icon](assets/typewriter.png) by discussing any issue.
+Feel free to contribute to ![icon](assets/typewriter.png) by raising an issue.
 
 Please install and use the [dev-tools](dev-tools) for correctly formatting the code when contributing to this repo.
 
