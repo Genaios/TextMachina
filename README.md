@@ -208,11 +208,11 @@ It can be modified by setting `TEXT_MACHINA_CACHE_DIR` to a different path.
 ## 📖 Citation
 ---
 ```
-@misc{text-machina,
-      title={{T}ext{M}achina: {S}eamless {G}eneration of {M}achine-{G}enerated {T}ext {D}atasets}, 
-      author={Sarvazyan, Areg Mikael and González, José Ángel and Franco-Salvador, Marc},
-      year={2023},
-      eprint={TBD},
+@misc{sarvazyan2024textmachina,
+      title={TextMachina: Seamless Generation of Machine-Generated Text Datasets}, 
+      author={Areg Mikael Sarvazyan and José Ángel González and Marc Franco-Salvador},
+      year={2024},
+      eprint={2401.03946},
       archivePrefix={arXiv},
       primaryClass={cs.CL}
 }
