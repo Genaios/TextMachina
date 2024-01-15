@@ -22,7 +22,7 @@ class OpenAIModel(TextGenerationModel):
     def __init__(self, model_config: ModelConfig):
         super().__init__(model_config)
         self.client = OpenAI(
-            api_key=os.environ["OPENAI_API_KEY"],
+            api_key=os.environ["GEN_OPENAI_API_KEY"],
             **get_instantiation_args(
                 OpenAI.__init__, self.model_config.model_dump()
             ),

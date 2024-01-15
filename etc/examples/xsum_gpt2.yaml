@@ -15,11 +15,14 @@ input_config:
     
     # Prompt template
     template: >-
-        Write a text starting by these sentences: '{sentences}'.\n\nText: 
+        Write a text starting by this sentence: '{sentences}'.\n\nText: 
     
     # Extractor params
     extractor: sentence_prefix
     max_input_tokens: 256
+    extractor_args:
+        sentence_prefix:
+            k: 1
 
 # Config for model instantiation
 model_config: 

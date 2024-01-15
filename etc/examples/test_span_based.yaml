@@ -16,20 +16,13 @@ input_config:
 
     # Prompt template
     template: >-
-        Write a news article starting by these two sentences: {sentences},
-        whose summary is '{summary}',
-        using the entities: {entities}\n\nArticle: 
+        Fill in the gaps of the following news article.\n\n
+        Article with gaps: {summary@5}\n\n
+        Gaps: 
 
     # Extractor params
-    extractor: combined
-    extractors_list:
-        - auxiliary.Auxiliary
-        - entity_list.EntityList
-        - sentence_prefix.SentencePrefix
+    extractor: word_gap
     max_input_tokens: 256
-    extractor_args:
-        sentence_prefix:
-            k: 2
     
 # Config for model instantiation
 model_config:

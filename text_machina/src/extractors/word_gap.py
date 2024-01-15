@@ -1,4 +1,4 @@
-from random import randint
+import re
 from typing import Dict, List
 
 from datasets import Dataset
@@ -9,20 +9,21 @@ from .base import Extractor
 from .utils import spacy_pipeline
 
 
-class SentencePrefix(Extractor):
+class WordGap(Extractor):
     def __init__(self, input_config: InputConfig, task_type: TaskType):
         super().__init__(input_config, task_type)
-        self.args = self.input_config.extractor_args.get("sentence_prefix", {})
-        self.n_sentences = lambda x: self.args.get(
-            "k", randint(1, max(1, len(x) - 1))
-        )
-        self.sampled_positions: List[int] = []
+        regex = r"{(.*(@\d+?)?)}"
+        self.placeholder, self.n_words = re.findall(
+            regex, self.input_config.template
+        )[0]
+        print(self.n_words)
+        exit()
 
     def prepare_human(self, human_texts: List[str]) -> List[str]:
         """
         For detection and attribution tasks, removes the extracted prefix
         from human texts to ensure both generations and human texts are
-        continuations of sentence prefixes.
+        continuations of word prefixes.
 
         For boundary tasks (human followed by generated), returns the prefix.
 
@@ -42,18 +43,14 @@ class SentencePrefix(Extractor):
                 "lemmatizer",
             ],
         )
+
         output: List[str] = []
         for idx, doc in enumerate(docs):
-            doc_sents = list(doc.sents)
-            n_sentences = self.sampled_positions[idx]
+            n_words = self.sampled_positions[idx]
             if self.task_type in [TaskType.DETECTION, TaskType.ATTRIBUTION]:
-                text = "".join(
-                    sent.text_with_ws for sent in doc_sents[n_sentences:]
-                )
+                text = "".join(token.text_with_ws for token in doc[n_words:])
             else:
-                text = "".join(
-                    sent.text_with_ws for sent in doc_sents[:n_sentences]
-                )
+                text = "".join(token.text_with_ws for token in doc[:n_words])
             output.append(text)
         return output
 
@@ -68,13 +65,13 @@ class SentencePrefix(Extractor):
                 "lemmatizer",
             ],
         )
+
         output_texts = []
         for doc in docs:
-            doc_sents = list(doc.sents)
-            n_sentences = self.n_sentences(doc_sents)
-            self.sampled_positions.append(n_sentences)
+            n_words = self.n_words(doc)
+            self.sampled_positions.append(n_words)
             output_texts.append(
-                "".join([sent.text_with_ws for sent in doc_sents[:n_sentences]])
+                "".join([token.text_with_ws for token in doc[:n_words]])
             )
 
-        return {"sentences": output_texts}
+        return {self.placeholder: output_texts}

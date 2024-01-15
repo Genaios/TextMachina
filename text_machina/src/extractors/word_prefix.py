@@ -1,4 +1,3 @@
-import re
 from random import randint
 from typing import Dict, List
 
@@ -13,18 +12,10 @@ from .utils import spacy_pipeline
 class WordPrefix(Extractor):
     def __init__(self, input_config: InputConfig, task_type: TaskType):
         super().__init__(input_config, task_type)
-        regex = r"{(words(@\d+?)?)}"
-        self.placeholder, n_words_match = re.findall(
-            regex, self.input_config.template
-        )[0]
-
-        # Random if not sentence length specified,
-        # or sentence length if specified.
-        if not n_words_match:
-            self.n_words = lambda x: randint(1, max(1, len(x) - 1))
-        else:
-            self.n_words = lambda x: int(n_words_match.replace("@", ""))
-
+        self.args = self.input_config.extractor_args.get("word_prefix", {})
+        self.n_words = lambda x: self.args.get(
+            "k", randint(1, max(1, len(x) - 1))
+        )
         self.sampled_positions: List[int] = []
 
     def prepare_human(self, human_texts: List[str]) -> List[str]:
@@ -82,4 +73,4 @@ class WordPrefix(Extractor):
                 "".join([token.text_with_ws for token in doc[:n_words]])
             )
 
-        return {self.placeholder: output_texts}
+        return {"words": output_texts}

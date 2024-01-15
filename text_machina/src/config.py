@@ -52,7 +52,9 @@ class InputConfig(BaseModel):
             " prompt inputs extracted with the extractors."
         ),
     )
-
+    extractor_args: Dict[str, Dict[str, Any]] = Field(
+        default={}, desc="Extractor specific arguments."
+    )
     language: str = Field(
         default="en",
         desc="Language of the dataset used.",
