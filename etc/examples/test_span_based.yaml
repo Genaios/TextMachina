@@ -5,7 +5,7 @@ input_config:
     language: en
 
     # Dataset generator parameters
-    quantity: 10
+    quantity: 1
     random_sample_human: true
 
     # HuggingFace dataset params
@@ -16,19 +16,28 @@ input_config:
 
     # Prompt template
     template: >-
-        Fill in the gaps of the following news article.\n\n
-        Article with gaps: {summary@5}\n\n
-        Gaps: 
+        Some sentences of a text has been replaced by gaps marked as "MASK".
+        Your have to fill these gaps, writing new sentences to be coherent
+        with the context.
+        Format your output according to the following JSON format:
+        {{"MASK-0": <text>, ...}}\n\n
+        # Article with gaps #\n
+        {document}\n\n
+        # JSON Output #\n
 
     # Extractor params
-    extractor: word_gap
-    max_input_tokens: 256
-    
+    extractor: gap_sentence
+    max_input_tokens: 512
+    extractor_args:
+        gap_sentence:
+            mask_token: "MASK"
+            percentage_range: [0.3, 0.4]
+
 # Config for model instantiation
 model_config:
     provider: openai
-    model_name: gpt-3.5-turbo-instruct
-    api_type: COMPLETION
+    model_name: gpt-4
+    api_type: CHAT
     threads: 8
     max_retries: 5
     timeout: 120
@@ -36,6 +45,6 @@ model_config:
 # Decoding args
 generation_config:
     # Ignore use `max_tokens` to get automatic length estimation
-    # max_tokens: 100
+    max_tokens: 512
     temperature: 0.7
     presence_penalty: 1.0

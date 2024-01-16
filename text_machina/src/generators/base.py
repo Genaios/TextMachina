@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Any
 
 from datasets import Dataset
 
@@ -8,7 +8,6 @@ from ..config import Config
 from ..constrainers import get_length_constrainer
 from ..data import PromptedDatasetBuilder
 from ..models import get_model
-from ..types import PromptedDataset
 
 _logger = get_logger(__name__)
 
@@ -22,7 +21,7 @@ class DatasetGenerator(ABC):
 
     def __init__(self, config: Config) -> None:
         self.config = config
-        self.model = get_model(config.model)
+        self.model = get_model(self.config.model)
         self.prompter = PromptedDatasetBuilder(self.config)
 
     def generate(self) -> Dataset:
@@ -36,32 +35,6 @@ class DatasetGenerator(ABC):
         dataset = self._pack(generations, **kwargs)
         dataset = self.add_config_info(dataset)
         return dataset
-
-    def add_config_info(self, dataset: Dataset) -> Dataset:
-        """
-        Adds config information to the dataset.
-
-        Args:
-            dataset (Dataset): the dataset to add config information to.
-        Returns:
-            Dataset: the dataset with config information added.
-        """
-        dataset = dataset.add_column(
-            "config_path",
-            [str(self.config.path)] * len(dataset),
-        )
-        return dataset
-
-    @abstractmethod
-    def _generate(self) -> Tuple[List[str], Dict]:
-        """
-        Generates a dataset based on the provided config.
-
-        Returns:
-            Tuple[List[str], Dict]: a tuple of the generated texts and
-                additional arguments to use for dataset packing.
-        """
-        ...
 
     @abstractmethod
     def _pack(self, generations: List[str], **kwargs) -> Dataset:
@@ -78,24 +51,28 @@ class DatasetGenerator(ABC):
         """
         ...
 
-
-class ClassificationDatasetGenerator(DatasetGenerator):
-    """
-    Dataset generator for classification tasks such as detection or attribution.
-
-    Implements `_generate` specifically for classification tasks.
-    Note that `_pack` still needs to be implemented.
-    """
-
-    def __init__(self, config: Config) -> None:
-        super().__init__(config=config)
-
-    def _generate(self) -> Tuple[List[str], Dict[str, PromptedDataset]]:
+    def add_config_info(self, dataset: Dataset) -> Dataset:
         """
-        Carries out generation process:
-        - Builds a prompt for each human sample in a given dataset
-        - Constrains generation length based on human length distribution
-        - Runs model inference.
+        Adds config information to the dataset.
+
+        Args:
+            dataset (Dataset): the dataset to add config information to.
+        Returns:
+            Dataset: the dataset with config information added.
+        """
+        dataset = dataset.add_column(
+            "config_path",
+            [str(self.config.path)] * len(dataset),
+        )
+        return dataset
+
+    def _generate(self) -> Tuple[List[str], Dict]:
+        """
+        Generates a dataset based on the provided config.
+
+        Returns:
+            Tuple[List[str], Dict]: a tuple of the generated texts and
+                additional arguments to use for dataset packing.
         """
         # prepare inputs
         prompted_dataset = self.prompter.build()
@@ -126,3 +103,20 @@ class ClassificationDatasetGenerator(DatasetGenerator):
         )
 
         return generations, {"prompted_dataset": prompted_dataset}
+
+
+class SpanDatasetGenerator(DatasetGenerator):
+    def __init__(self, config: Config) -> None:
+        super().__init__(config)
+        self.mask_token = self.config.input.extractor_args[self.config.input.extractor][
+            "mask_token"
+        ]
+
+    def _merge_gaps(
+        self, masked_text: str, generation: str
+    ) -> Dict[str, List[Tuple[int, int]]]:
+        ...
+
+
+# dict_values([['Pritchard, a former England Under-21 international, has agreed a four-year deal at Carrow Road. MASK-0. MASK-1. He has made more than 400 career appearances for clubs including Exeter, Peterborough and Crawley and will fight for a first-team place alongside John Ruddy and Michael McGovern. Pritchard told the club website "I feel I need to go out and prove myself again in football. MASK-2. MASK-3. " Find all the latest football transfers on our dedicated page.']])
+# ['{"MASK-0": "He is set to join the team in their upcoming season.", "MASK-1": "Pritchard brings a wealth of experience and talent to Norwich City", "MASK-2": "I believe Norwich is the perfect platform for me to do so.", "MASK-3": "I am excited for this new chapter in my career."}']

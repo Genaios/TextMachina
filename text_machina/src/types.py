@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List
+from typing import List, Dict
 
 from pydantic import BaseModel
 
@@ -36,6 +36,7 @@ class PromptedDataset(BaseModel):
     Wrapper for a prompted dataset used to generate MGT texts.
     """
 
+    prompt_inputs: Dict[str, List[str]]
     prompted_texts: List[str]
     human_texts: List[str]
 
@@ -44,3 +45,5 @@ class TaskType(str, Enum):
     DETECTION: str = "detection"
     ATTRIBUTION: str = "attribution"
     BOUNDARY: str = "boundary"
+    SPAN_DETECTION: str = "span_detection"
+    SPAN_ATTRIBUTION: str = "span_attribution"

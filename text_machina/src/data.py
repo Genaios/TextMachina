@@ -55,8 +55,9 @@ class PromptedDatasetBuilder:
         # truncate the prompt inputs and format the prompts
         prompt_inputs = self.truncate_inputs(prompt_inputs)
         inputs = format_prompt(prompt.template, prompt_inputs)
-
-        return PromptedDataset(prompted_texts=inputs, human_texts=human_texts)
+        return PromptedDataset(
+            prompt_inputs=prompt_inputs, prompted_texts=inputs, human_texts=human_texts
+        )
 
     def sampling(self, dataset: Dataset) -> Tuple[List[str], Dataset]:
         """
@@ -120,18 +121,14 @@ class PromptedDatasetBuilder:
             model_name=self.config.model.model_name,
         )
 
-        prompt_inputs = tokenizer.distributed_truncate(
-            prompt_inputs, max_input_tokens
-        )
+        prompt_inputs = tokenizer.distributed_truncate(prompt_inputs, max_input_tokens)
 
         _logger.info(f"Truncated prompt inputs to {max_input_tokens} tokens.")
 
         return prompt_inputs
 
 
-def format_prompt(
-    template: str, prompt_inputs: Dict[str, List[str]]
-) -> List[str]:
+def format_prompt(template: str, prompt_inputs: Dict[str, List[str]]) -> List[str]:
     """
     Formats a prompt template with the prompt inputs.
 
@@ -303,9 +300,7 @@ def domain_model_counts(dataset: Dataset) -> pd.DataFrame:
     # so we ignore the errors in the generation process.
     df = df[~df["text"].str.contains(GENERATION_ERROR)]
 
-    counts = (
-        df.groupby(["model", "domain"]).size().rename("count").reset_index()
-    )
+    counts = df.groupby(["model", "domain"]).size().rename("count").reset_index()
 
     counts = counts.pivot(columns="model", index="domain", values="count")
 

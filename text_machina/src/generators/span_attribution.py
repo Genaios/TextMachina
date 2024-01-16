@@ -1,17 +1,18 @@
 from typing import List
 
-from datasets import Dataset
+from datasets import Dataset, concatenate_datasets
 
 from ..common.exceptions import DatasetGenerationError
 from ..config import Config
-from .base import DatasetGenerator
+from ..types import DetectionLabels, Placeholders
+from .base import SpanDatasetGenerator
 
 
-class BoundaryDatasetGenerator(DatasetGenerator):
+class SpanAttributionDatasetGenerator(SpanDatasetGenerator):
     """
-    Dataset generator for the boundary task type.
+    Dataset generator for the span attribution task type.
 
-    Implements `_pack` to label the boundary point.
+    Implements `_pack` by correctly labeling the dataset for detection.
     """
 
     def __init__(self, config: Config) -> None:
@@ -32,29 +33,40 @@ class BoundaryDatasetGenerator(DatasetGenerator):
         prompted_dataset = kwargs.get("prompted_dataset", None)
         if prompted_dataset is None:
             raise DatasetGenerationError(f"prompted_dataset not found: {self}")
-
+        prompt_inputs = prompted_dataset.prompt_inputs.values()
         model_name = self.config.model.model_name
         domain = self.config.input.domain
         extractor = self.config.input.extractor
 
-        dataset = Dataset.from_list(
+        generated_dataset = Dataset.from_list(
             [
                 {
                     "prompt": prompt,
-                    "text": f"{human.strip()} {generated.strip()}",
-                    "label": len(human.strip()),
+                    "text": text,
+                    "label": DetectionLabels.GENERATED.value,
                     "model": model_name,
                     "domain": domain,
                     "extractor": extractor,
                 }
-                for prompt, human, generated in zip(
-                    prompted_dataset.prompted_texts,
-                    prompted_dataset.human_texts,
-                    generations,
-                )
+                for prompt, text in zip(prompted_dataset.prompted_texts, generations)
             ]
         )
 
+        human_dataset = Dataset.from_list(
+            [
+                {
+                    "prompt": Placeholders.NO_PROMPT.value,
+                    "text": text,
+                    "label": DetectionLabels.HUMAN.value,
+                    "model": DetectionLabels.HUMAN.value,
+                    "domain": domain,
+                    "extractor": Placeholders.NO_EXTRACTOR.value,
+                }
+                for text in prompted_dataset.human_texts
+            ]
+        )
+
+        dataset = concatenate_datasets([human_dataset, generated_dataset])
         dataset = dataset.shuffle()
 
         return dataset

@@ -4,10 +4,10 @@ from datasets import Dataset
 
 from ..common.exceptions import DatasetGenerationError
 from ..config import Config
-from .base import ClassificationDatasetGenerator
+from .base import DatasetGenerator
 
 
-class AttributionDatasetGenerator(ClassificationDatasetGenerator):
+class AttributionDatasetGenerator(DatasetGenerator):
     """
     Dataset generator for the attribution task type.
 
@@ -48,9 +48,7 @@ class AttributionDatasetGenerator(ClassificationDatasetGenerator):
                     "domain": domain,
                     "extractor": extractor,
                 }
-                for prompt, text in zip(
-                    prompted_dataset.prompted_texts, generations
-                )
+                for prompt, text in zip(prompted_dataset.prompted_texts, generations)
             ]
         )
 
