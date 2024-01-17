@@ -1,0 +1,40 @@
+# Config for everything related to dataset generation inputs
+input_config:
+    # Dataset metadata
+    domain: news
+    language: en
+
+    # Dataset generator parameters
+    quantity: 10
+    # Mandatory for boundary detection:
+    random_sample_human: false
+
+    # HuggingFace dataset params
+    dataset: xsum
+    dataset_text_column: document
+    dataset_params:
+        split: test
+
+    # Prompt template
+    template: >-
+        Complete the text starting by these sentences: '{sentences}'. Refrain from copying the provided sentences, write new ones coherent with the prefix.\n\nText: 
+    
+    # Extractor params
+    extractor: sentence_prefix
+    max_input_tokens: 256
+
+# Config for model instantiation
+model_config:
+    provider: openai
+    model_name: gpt-4
+    api_type: CHAT
+    threads: 8
+    max_retries: 5
+    timeout: 120
+    
+# Decoding args
+generation_config:
+    # Ignore use `max_tokens` to get automatic length estimation
+    max_tokens: 512
+    temperature: 0.7
+    presence_penalty: 1.0
