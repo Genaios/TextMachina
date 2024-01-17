@@ -2,7 +2,13 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import pandas as pd
-from datasets import Dataset, concatenate_datasets, load_from_disk
+from datasets import (
+    Dataset,
+    DatasetDict,
+    concatenate_datasets,
+    load_dataset,
+    load_from_disk,
+)
 
 from .common.logging import get_logger
 from .config import Config, InputConfig
@@ -205,32 +211,6 @@ def load_dataset_from_config(config: InputConfig) -> Dataset:
     Returns:
         Dataset: a dataset.
     """
-
-    # TESTS:
-    from datasets import Dataset
-
-    dataset = Dataset.from_dict(
-        {
-            "summary": [
-                "I like Apolo. I don't like Athenea. I like Zeus. I love CNN. I hate Machine Learning.",
-                "Sentence 3.",
-                "I like apples. I like pears. I don't like football. I like basketball.",
-                "Sentence 1.",
-                "Sentence 2.",
-                "I like this. And this.",
-            ],
-            "document": [
-                "I like Apolo. I don't like Athenea. I like Zeus. I love CNN. I hate Machine Learning.",
-                "Sentence 3.",
-                "I like apples. I like pears. I don't like football. I like basketball.",
-                "Sentence 1.",
-                "Sentence 2.",
-                "I like this. And this.",
-            ],
-        }
-    )
-    return dataset
-    """
     try:
         dataset = load_from_disk(config.dataset)
         if "split" in config.dataset_params:
@@ -245,9 +225,8 @@ def load_dataset_from_config(config: InputConfig) -> Dataset:
             "specified in the config file."
         )
         dataset = dataset[split]
-    
+
     return dataset
-    """
 
 
 def get_save_path(

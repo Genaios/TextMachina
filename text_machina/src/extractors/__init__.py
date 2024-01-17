@@ -9,6 +9,7 @@ from .combined import Combined
 from .dummy import Dummy
 from .entity_list import EntityList
 from .gap_sentence import GapSentence
+from .gap_word import GapWord
 from .noun_list import NounList
 from .sentence_prefix import SentencePrefix
 from .word_prefix import WordPrefix
@@ -22,6 +23,7 @@ EXTRACTORS: Mapping[str, Type[Extractor]] = {
     "sentence_prefix": SentencePrefix,
     "word_prefix": WordPrefix,
     "gap_sentence": GapSentence,
+    "gap_word": GapWord,
 }
 
 
