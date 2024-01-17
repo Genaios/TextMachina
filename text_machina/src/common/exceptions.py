@@ -165,3 +165,14 @@ class InvalidSpacyModel(TextMachinaError):
         self.language = language
         msg = f"Spacy does not have a model for `language={self.language}`"
         super().__init__(msg)
+
+
+class ExtractorEmptyColumns(TextMachinaError):
+    """
+    Raised when an extractor returns empty lists in any field.
+    """
+
+    def __init__(self, extractor: str, field: str):
+        self.field = field
+        msg = f"The extractor {extractor} returned empty '{field}'."
+        super().__init__(msg)

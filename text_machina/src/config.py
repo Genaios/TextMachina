@@ -25,12 +25,16 @@ class InputConfig(BaseModel):
     dataset_text_column: str = Field(
         description="Name of column in the dataset containing the text."
     )
-    dataset_params: Dict[str, Any] = Field(description="Arguments to load the dataset.")
+    dataset_params: Dict[str, Any] = Field(
+        description="Arguments to load the dataset."
+    )
     template: str = Field(description="Template for the generations.")
     extractor: str = Field(description="Extractor name.")
     extractors_list: List[str] = Field(
         default=[],
-        description=("List of extractors to be used" " with the `combined` extractor."),
+        description=(
+            "List of extractors to be used" " with the `combined` extractor."
+        ),
         validate_default=True,
     )
     random_sample_human: bool = Field(
@@ -63,7 +67,9 @@ class InputConfig(BaseModel):
         import pycountry
 
         allowed_languages = [
-            lang.alpha_2 for lang in pycountry.languages if hasattr(lang, "alpha_2")
+            lang.alpha_2
+            for lang in pycountry.languages
+            if hasattr(lang, "alpha_2")
         ] + ["multilingual"]
 
         if language not in allowed_languages:
@@ -189,7 +195,9 @@ class Config(BaseModel):
         )
 
         if not path_iterator:
-            raise ValueError("The provided path does not contain any YML files", path)
+            raise ValueError(
+                "The provided path does not contain any YML files", path
+            )
 
         return [
             cls.load_config(

@@ -7,15 +7,13 @@ from .attribution import AttributionDatasetGenerator
 from .base import DatasetGenerator
 from .boundary import BoundaryDatasetGenerator
 from .detection import DetectionDatasetGenerator
-from .span_detection import SpanDetectionDatasetGenerator
-from .span_attribution import SpanAttributionDatasetGenerator
+from .mixcase import MixCaseDatasetGenerator
 
 GENERATORS: Mapping[TaskType, Type[DatasetGenerator]] = {
     TaskType.DETECTION: DetectionDatasetGenerator,
     TaskType.ATTRIBUTION: AttributionDatasetGenerator,
     TaskType.BOUNDARY: BoundaryDatasetGenerator,
-    TaskType.SPAN_DETECTION: SpanDetectionDatasetGenerator,
-    TaskType.SPAN_ATTRIBUTION: SpanAttributionDatasetGenerator
+    TaskType.MIXCASE: MixCaseDatasetGenerator,
 }
 
 

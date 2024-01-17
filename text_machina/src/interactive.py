@@ -73,6 +73,7 @@ def rich_print(idx: int, row: Dict[str, Any], task_type: TaskType) -> None:
     print("\033[H\033[J", end="")
     title = get_formatted_title(idx, row, task_type)
 
+    # TODO: Move this into specific classes
     panels = []
     if (
         task_type in {TaskType.DETECTION, TaskType.ATTRIBUTION}
@@ -100,7 +101,6 @@ def rich_print(idx: int, row: Dict[str, Any], task_type: TaskType) -> None:
         style="white",
     )
     panels.append(text_panel)
-
     rprint(Panel(Group(*panels), title=title))
 
     show_prompt()

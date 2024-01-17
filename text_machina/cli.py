@@ -54,8 +54,11 @@ def explore(
             help="The maximum number of texts to generate per config."
         ),
     ] = 10,
-    step: Annotated[
-        bool, typer.Option(help="Whether to step through the generated texts")
+    interactive: Annotated[
+        bool,
+        typer.Option(
+            help="Whether to step interactively through the generated texts"
+        ),
     ] = True,
 ) -> None:
     """
@@ -77,7 +80,7 @@ def explore(
         save_dir,
         run_name,
         task_type,
-        step,
+        interactive,
         max_generations,
     )
 

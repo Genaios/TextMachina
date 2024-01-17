@@ -3,6 +3,7 @@ from typing import Dict, List
 
 from datasets import Dataset
 
+from ..common.exceptions import ExtractorEmptyColumns
 from ..config import InputConfig
 from ..types import TaskType
 from .utils import clean_inputs
@@ -59,10 +60,18 @@ class Extractor(ABC):
             Dict[str, List[str]]: A dictionary mapping each template
                                   key to a list of prompt inputs
                                   (one input per template key and example).
+
+        Raises:
+            ExtractorEmptyColumns: if any field of the prompt_inputs is empty.
         """
         prompt_inputs = self._extract(dataset)
         prompt_inputs = {
             column: clean_inputs(prompt_inputs[column])
             for column in prompt_inputs
         }
+
+        for field in prompt_inputs:
+            if len(prompt_inputs[field]) == 0:
+                raise ExtractorEmptyColumns(self.__class__.__name__, field)
+
         return prompt_inputs

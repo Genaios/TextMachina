@@ -2,13 +2,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import pandas as pd
-from datasets import (
-    Dataset,
-    DatasetDict,
-    concatenate_datasets,
-    load_dataset,
-    load_from_disk,
-)
+from datasets import Dataset, concatenate_datasets, load_from_disk
 
 from .common.logging import get_logger
 from .config import Config, InputConfig
@@ -27,6 +21,10 @@ class PromptedDatasetBuilder:
 
     def __init__(self, config: Config):
         self.config = config
+        self.prompt = self.get_prompt()
+        self.extractor = get_extractor(
+            self.prompt.extractor, self.config.input, self.config.task_type
+        )
 
     def build(self) -> PromptedDataset:
         """
@@ -36,28 +34,21 @@ class PromptedDatasetBuilder:
         Returns:
             PromptedDataset: a dataset with prompted and human texts.
         """
-        # get prompt and prepare config
-        prompt = self.get_prompt()
-
         # load and prepare dataset
         dataset = load_dataset_from_config(self.config.input)
 
         # sample human texts
         human_texts, dataset = self.sampling(dataset)
 
-        # get the extractor, compute prompt inputs and prepare human texts
-        extractor = get_extractor(
-            prompt.extractor, self.config.input, self.config.task_type
-        )
-        prompt_inputs = extractor.extract(dataset)
-        human_texts = extractor.prepare_human(human_texts)
+        # compute prompt inputs and prepare human texts
+        prompt_inputs = self.extractor.extract(dataset)
+        human_texts = self.extractor.prepare_human(human_texts)
 
         # truncate the prompt inputs and format the prompts
         prompt_inputs = self.truncate_inputs(prompt_inputs)
-        inputs = format_prompt(prompt.template, prompt_inputs)
-        return PromptedDataset(
-            prompt_inputs=prompt_inputs, prompted_texts=inputs, human_texts=human_texts
-        )
+        inputs = format_prompt(self.prompt.template, prompt_inputs)
+
+        return PromptedDataset(prompted_texts=inputs, human_texts=human_texts)
 
     def sampling(self, dataset: Dataset) -> Tuple[List[str], Dataset]:
         """
@@ -121,14 +112,18 @@ class PromptedDatasetBuilder:
             model_name=self.config.model.model_name,
         )
 
-        prompt_inputs = tokenizer.distributed_truncate(prompt_inputs, max_input_tokens)
+        prompt_inputs = tokenizer.distributed_truncate(
+            prompt_inputs, max_input_tokens
+        )
 
         _logger.info(f"Truncated prompt inputs to {max_input_tokens} tokens.")
 
         return prompt_inputs
 
 
-def format_prompt(template: str, prompt_inputs: Dict[str, List[str]]) -> List[str]:
+def format_prompt(
+    template: str, prompt_inputs: Dict[str, List[str]]
+) -> List[str]:
     """
     Formats a prompt template with the prompt inputs.
 
@@ -210,6 +205,32 @@ def load_dataset_from_config(config: InputConfig) -> Dataset:
     Returns:
         Dataset: a dataset.
     """
+
+    # TESTS:
+    from datasets import Dataset
+
+    dataset = Dataset.from_dict(
+        {
+            "summary": [
+                "I like Apolo. I don't like Athenea. I like Zeus. I love CNN. I hate Machine Learning.",
+                "Sentence 3.",
+                "I like apples. I like pears. I don't like football. I like basketball.",
+                "Sentence 1.",
+                "Sentence 2.",
+                "I like this. And this.",
+            ],
+            "document": [
+                "I like Apolo. I don't like Athenea. I like Zeus. I love CNN. I hate Machine Learning.",
+                "Sentence 3.",
+                "I like apples. I like pears. I don't like football. I like basketball.",
+                "Sentence 1.",
+                "Sentence 2.",
+                "I like this. And this.",
+            ],
+        }
+    )
+    return dataset
+    """
     try:
         dataset = load_from_disk(config.dataset)
         if "split" in config.dataset_params:
@@ -224,8 +245,9 @@ def load_dataset_from_config(config: InputConfig) -> Dataset:
             "specified in the config file."
         )
         dataset = dataset[split]
-
+    
     return dataset
+    """
 
 
 def get_save_path(
@@ -300,7 +322,9 @@ def domain_model_counts(dataset: Dataset) -> pd.DataFrame:
     # so we ignore the errors in the generation process.
     df = df[~df["text"].str.contains(GENERATION_ERROR)]
 
-    counts = df.groupby(["model", "domain"]).size().rename("count").reset_index()
+    counts = (
+        df.groupby(["model", "domain"]).size().rename("count").reset_index()
+    )
 
     counts = counts.pivot(columns="model", index="domain", values="count")
 

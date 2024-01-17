@@ -124,7 +124,9 @@ def truncate(
         # texts with similar token lengths are grouped together
         # to better approximate domain token length distribution
         # and truncate less from longer texts.
-        grouped["group"] = grouped.groupby("label")["token_length"].rank("first")
+        grouped["group"] = grouped.groupby("label")["token_length"].rank(
+            "first"
+        )
 
         # truncate a text by setting its new length to:
         # min_token_length_per_group - min_tokens_to_truncate
@@ -183,7 +185,9 @@ def truncate(
             f"{dropped_quantity} texts were too short and were dropped in the truncation process."
         )
 
-    new_df = new_df.drop(["token_length", "new_token_length", "tokenized"], axis=1)
+    new_df = new_df.drop(
+        ["token_length", "new_token_length", "tokenized"], axis=1
+    )
 
     dataset = Dataset.from_pandas(new_df)
     return dataset
@@ -225,7 +229,9 @@ def filter_by_language(dataset: Dataset, language: str = "en") -> Dataset:
 
 
 def get_langid_model() -> fasttext.FastText:
-    url = "https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin"
+    url = (
+        "https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin"
+    )
     model_path = get_cache_path() / "fasttext" / "lid.176.bin"
 
     # Need to download if it doesn't exist

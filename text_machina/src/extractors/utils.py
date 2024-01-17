@@ -2,8 +2,7 @@ from typing import List
 
 import spacy
 from tqdm import tqdm
-from math import ceil
-from random import uniform, choice, sample
+
 from ..common import InvalidSpacyModel, get_logger
 from .types import SPACY_MODEL_MAPPING
 
@@ -87,58 +86,3 @@ def spacy_pipeline(
     )
 
     return processed_texts
-
-
-def mask_spans(text: str) -> str:
-    ...
-
-
-def format_mask_token(idx: int, mask_token: str, add_period: bool = False) -> str:
-    period = "." if add_period else ""
-    return f"{mask_token}-{idx}{period}"
-
-
-def mask_sentences(
-    texts: List[str], language: str, percentage_range: List[float], mask_token: str
-) -> List[str]:
-    """Mask a random percentage of sentences in the texts provided.
-
-    Args:
-        texts (List[str]): list of texts to mask.
-        language (str): language for the spacy pipeline.
-        percentage_range (List[float]): min and max percentage to mask.
-        mask_token (str): token to replace masked sentences.
-
-    Returns:
-        List[str]: list of texts with masked sentences.
-    """
-    docs = spacy_pipeline(texts, language)
-    masked_texts = []
-    for doc in docs:
-        sentences = [sent.text for sent in doc.sents]
-        # In case of 1 sentences, avoid masking it,
-        # just add a mask sentence to right or left randomly.
-        if len(sentences) == 1:
-            mask_position = choice([0, 1])
-            fmt_masked_token = format_mask_token(
-                0,
-                mask_token=mask_token,
-                add_period=True,
-            )
-            sentences.insert(mask_position, fmt_masked_token)
-            masked_texts.append(" ".join(sentences).strip())
-        else:
-            percentage_masks = uniform(*percentage_range)
-            # Min to avoid masking all the sentences.
-            sents_to_mask = min(
-                len(sentences) - 1, ceil(percentage_masks * len(sentences))
-            )
-            positions = sorted(sample(range(len(sentences)), sents_to_mask))
-            for mask_idx, sent_idx in enumerate(positions):
-                sentences[sent_idx] = format_mask_token(
-                    mask_idx,
-                    mask_token=mask_token,
-                    add_period=True,
-                )
-            masked_texts.append(" ".join(sentences).strip())
-    return masked_texts

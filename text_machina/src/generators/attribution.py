@@ -48,7 +48,9 @@ class AttributionDatasetGenerator(DatasetGenerator):
                     "domain": domain,
                     "extractor": extractor,
                 }
-                for prompt, text in zip(prompted_dataset.prompted_texts, generations)
+                for prompt, text in zip(
+                    prompted_dataset.prompted_texts, generations
+                )
             ]
         )
 
