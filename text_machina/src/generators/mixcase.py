@@ -21,9 +21,9 @@ class MixCaseDatasetGenerator(DatasetGenerator):
     ) -> Tuple[List[str], List[List[Dict]]]:
         """
         Interleaves generated and human spans to build mixcase samples.
-        The `start` and `end` of the labels follow the Python convention
-        of including the `start` element and excluding the `end` one.
-        For instance, given a text: "I like Apolo. I don't like Athenea",
+        The `start` and `end` of the labels follow the Python [`start`, `end`)
+        convention, i.e., including the `start` element and excluding `end`.
+        For instance, given the text: "I like Apolo. I don't like Athenea",
         being the first sentence human-written and the second one generated,
         the labels will be:
         [
