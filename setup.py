@@ -31,6 +31,7 @@ EXPLORE_DEPS = [
     "readchar>=4.0.5",
     "evaluate>=0.4.1",
     "textstat>=0.7.3",
+    "seqeval>=1.2.2",
 ]
 
 DEPS = TEXT_GENERATION_DEPS + EXPLORE_DEPS
