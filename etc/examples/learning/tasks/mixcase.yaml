@@ -15,6 +15,13 @@ input_config:
         split: test
 
     # Prompt template
+    # For mixcase tasks, TextMachina's strategy is to sample
+    # human sentences/word-spans boundaries (one left-side and one
+    # right-side with a gap in between), generate a random number of
+    # sentences/words in between the boundary and then interleave the
+    # generations and the human boundaries.
+    # You have to prepare a prompt template to generate sentences/words 
+    # between a boundary of two sentences/word-spans.
     template: >-
         Write {n} sentences to fill the gap marked as "____" between the following 2 sentences.
         Refrain to copy the sentences provided:\n
@@ -22,11 +29,13 @@ input_config:
         Sentences:
 
     # Extractor params
+    # For mixcase tasks, use only `gap_sentence` or `gap_word` extractors.
+    # Read the extractors/gap_sentence.py and extractors/gap_word.py to
+    # figure the arguments you can use for these extractors.
     extractor: gap_sentence
     max_input_tokens: 512
     extractor_args:
         gap_sentence:
-            dataset_column: document
             gap_token: "____"
             max_percentage_boundaries: 0.4
             max_sentence_span: 2

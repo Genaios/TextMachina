@@ -8,6 +8,10 @@ from .base import Explorer
 
 
 class AttributionExplorer(Explorer):
+    """
+    Explorer for attribution tasks.
+    """
+
     def __init__(self, dataset: Dataset) -> None:
         super().__init__(dataset)
 

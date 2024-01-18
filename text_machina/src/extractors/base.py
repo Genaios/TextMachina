@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict, List
+from typing import Any, Dict, List
 
 from datasets import Dataset
 
@@ -10,9 +10,14 @@ from .utils import clean_inputs
 
 
 class Extractor(ABC):
+    """
+    Base class for an extractor.
+    """
+
     def __init__(self, input_config: InputConfig, task_type: TaskType):
         self.input_config = input_config
         self.task_type = task_type
+        self.workspace: Dict[str, Any] = {}
 
     @abstractmethod
     def _extract(self, dataset: Dataset) -> Dict[str, List[str]]:

@@ -56,7 +56,7 @@ You may obtain a copy of the License at
 
 - 🦜 **LLM integrations**: easily integrates any LLM provider. Currently, ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true) supports LLMs from Anthropic, Cohere, OpenAI, Google Vertex AI, and any model from HuggingFace deployed either locally or remotely through Inference API or Inference Endpoints. See [models](text_machina/src/models/) to implement your own LLM provider.
 
-- ✍️ **Prompt templating**: just write your template with placeholders and let ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true) extractors to fill the template and prepare a prompt for an LLM. See [extractors](text_machina/src/extractors) to implement your own extractors.
+- ✍️ **Prompt templating**: just write your prompt template with placeholders and let ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true) extractors to fill the template and prepare a prompt for an LLM. See [extractors](text_machina/src/extractors) to implement your own extractors and learn more about the placeholders for each extractor.
 - 🔒 **Constrained decoding**: automatically infer LLM decoding hyper-parameters from the human texts to improve the quality and reduce the biases of your MGT datasets. See [constrainers](text_machina/src/constrainers) to implement your own constrainers.
 - 🛠️ **Post-processing**: post-process functions aimed to improve the quality of any MGT dataset and prevent common biases and artifacts. See [postprocessing](text_machina/src/postprocessing.py) to add new postprocess functions.
 - 🌈 **Bias mitigation**: ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true) is built with bias prevention in mind and helps you across all the pipeline to prevent introducing spurious correlations in your datasets.
@@ -104,7 +104,7 @@ pip install -e .[dev]
 Once installed, you are ready to use ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true) for building MGT datasets either using the [CLI](text_machina/src/cli.py) or programmatically.
 
 ### 📟 Using the CLI
-The first step is to define a YAML configuration file or a directory tree containing YAML files. Look the [examples](etc/examples) folder to be familiar with the configurations.
+The first step is to define a YAML configuration file or a directory tree containing YAML files. Read the [examples/learning](etc/examples/learning) files to learn how to define configuration using different providers and extractors for different tasks. Take a look to [examples/use_cases](etc/examples/use_cases) to see configurations for specific use cases.
 
 Then, we can call the *explore* and *generate* endpoints of ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true)'s CLI. The *explore* endpoint allows to inspect a small generated dataset using an specific configuration through an interactive interface. For instance, let's suppose we want to check how an MGT detection dataset generated using *[XSum](https://huggingface.co/datasets/EdinburghNLP/xsum)* news articles and *gpt-3.5-turbo-instruct* looks like, and compute some metrics:
 

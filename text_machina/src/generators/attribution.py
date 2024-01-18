@@ -10,8 +10,6 @@ from .base import DatasetGenerator
 class AttributionDatasetGenerator(DatasetGenerator):
     """
     Dataset generator for the attribution task type.
-
-    Implements `_pack` by correctly labeling the dataset for attribution.
     """
 
     def __init__(self, config: Config) -> None:

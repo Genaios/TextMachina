@@ -8,6 +8,10 @@ from .base import Explorer
 
 
 class MixCaseExplorer(Explorer):
+    """
+    Explorer for mixcase tasks.
+    """
+
     def __init__(self, dataset: Dataset) -> None:
         super().__init__(dataset)
 

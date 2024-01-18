@@ -11,8 +11,6 @@ from .base import DatasetGenerator
 class DetectionDatasetGenerator(DatasetGenerator):
     """
     Dataset generator for the detection task type.
-
-    Implements `_pack` by correctly labeling the dataset for detection.
     """
 
     def __init__(self, config: Config) -> None:

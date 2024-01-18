@@ -10,6 +10,18 @@ from .utils import spacy_pipeline
 
 
 class WordPrefix(Extractor):
+    """
+    Extractor that fills the prompt template with a words
+    prefix extracted from a text column of a dataset.
+
+    This extractor needs a template placeholder named {words}.
+
+    This extractor allows to pass the following arguments in the
+    `extractor_args` field from the config:
+        - k (int): number of words in the prefix. If not specified,
+                   `k` will be random for each sample.
+    """
+
     def __init__(self, input_config: InputConfig, task_type: TaskType):
         super().__init__(input_config, task_type)
         self.args = self.input_config.extractor_args.get("word_prefix", {})

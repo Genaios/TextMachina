@@ -11,8 +11,6 @@ from .base import DatasetGenerator
 class MixCaseDatasetGenerator(DatasetGenerator):
     """
     Dataset generator for the mixcase task type.
-
-    Implements `_pack` by correctly labeling the dataset.
     """
 
     def __init__(self, config: Config) -> None:
@@ -20,16 +18,28 @@ class MixCaseDatasetGenerator(DatasetGenerator):
 
     def _interleave(
         self, generations: List[str]
-    ) -> Tuple[List[str], List[Dict]]:
+    ) -> Tuple[List[str], List[List[Dict]]]:
+        """
+        Interleaves generated and human spans to build mixcase samples.
+
+        Args:
+            generations (List[str]): list of generations
+
+        Returns:
+            Tuple[List[str], List[List[Dict]]]: the interleaved texts and
+            the list of labels of each text.
+        """
         texts = []
         labels = []
         prev_sample = 0
         for idx, sample_boundaries in enumerate(
-            self.prompter.extractor.num_boundaries
+            self.prompter.extractor.workspace["num_boundaries"]
         ):
             # Text w/o sampled boundaries
             if sample_boundaries == 0:
-                text = " ".join(self.prompter.extractor.human_spans[idx])
+                text = " ".join(
+                    self.prompter.extractor.workspace["human_spans"][idx]
+                )
                 texts.append(text)
                 sample_labels = [
                     LabeledSpan(
@@ -43,8 +53,12 @@ class MixCaseDatasetGenerator(DatasetGenerator):
                 sample_generations = generations[
                     prev_sample : prev_sample + sample_boundaries
                 ]
-                sample_spans = self.prompter.extractor.human_spans[idx]
-                sample_positions = self.prompter.extractor.positions[idx]
+                sample_spans = self.prompter.extractor.workspace["human_spans"][
+                    idx
+                ]
+                sample_positions = self.prompter.extractor.workspace[
+                    "positions"
+                ][idx]
                 sample_labels = []
                 added = 0
                 prev_label_pos = -1
@@ -118,8 +132,8 @@ class MixCaseDatasetGenerator(DatasetGenerator):
 
         prev_sample = 0
         mixed_samples = []
-        for idx, (text, labels) in enumerate(zip(texts, labels)):
-            sample_boundaries = extractor.num_boundaries[idx]
+        for idx, (text, sample_labels) in enumerate(zip(texts, labels)):
+            sample_boundaries = extractor.workspace["num_boundaries"][idx]
             prompt = prompted_dataset.prompted_texts[
                 prev_sample : prev_sample + sample_boundaries
             ] or [Placeholders.NO_PROMPT.value]
@@ -128,13 +142,13 @@ class MixCaseDatasetGenerator(DatasetGenerator):
                 {
                     "prompt": prompt,
                     "text": text,
-                    "label": labels,
+                    "label": sample_labels,
                     "model": model_name,
                     "domain": domain,
                     "extractor": extractor_name,
                 }
             )
-            prev_sample += extractor.num_boundaries[idx]
+            prev_sample += extractor.workspace["num_boundaries"][idx]
 
         mixed_dataset = Dataset.from_list(mixed_samples)
 

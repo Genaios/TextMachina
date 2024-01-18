@@ -6,8 +6,7 @@ input_config:
 
     # Dataset generator parameters
     quantity: 10
-    # Mandatory for boundary detection:
-    random_sample_human: false
+    random_sample_human: true
 
     # HuggingFace dataset params
     dataset: xsum
@@ -17,11 +16,20 @@ input_config:
 
     # Prompt template
     template: >-
-        Complete the text starting by these sentences: '{sentences}'. Refrain from copying the provided sentences, write new ones coherent with the prefix.\n\nText: 
-    
+        Write {n} words to fill the gap marked as "____" between the following 2 word spans.
+        Refrain to copy the word spans provided:\n
+        {boundaries}\n\n
+        words:
+
     # Extractor params
-    extractor: sentence_prefix
-    max_input_tokens: 256
+    extractor: gap_word
+    max_input_tokens: 512
+    extractor_args:
+        gap_word:
+            gap_token: "____"
+            max_percentage_boundaries: 0.01
+            max_word_span: 20
+            range_boundary_size: [20, 25]
 
 # Config for model instantiation
 model_config:

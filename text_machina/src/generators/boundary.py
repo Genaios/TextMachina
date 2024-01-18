@@ -10,8 +10,6 @@ from .base import DatasetGenerator
 class BoundaryDatasetGenerator(DatasetGenerator):
     """
     Dataset generator for the boundary task type.
-
-    Implements `_pack` to label the boundary point.
     """
 
     def __init__(self, config: Config) -> None:

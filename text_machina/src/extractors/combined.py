@@ -10,6 +10,16 @@ from .base import Extractor
 
 
 class Combined(Extractor):
+    """
+    Extractor that combines multiple extractors.
+
+    This extractor does not need specific template placeholders,
+    just the placehoders of the extractors being combined.
+
+    This extractor does not need specific arguments,
+    just the arguments for the extractors being combined.
+    """
+
     def __init__(self, input_config: InputConfig, task_type: TaskType):
         super().__init__(input_config, task_type)
         self.extractors = []

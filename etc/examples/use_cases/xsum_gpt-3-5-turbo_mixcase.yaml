@@ -1,0 +1,47 @@
+# Config for everything related to dataset generation inputs
+input_config:
+    # Dataset metadata
+    domain: news
+    language: en
+
+    # Dataset generator parameters
+    quantity: 10
+    random_sample_human: true
+
+    # HuggingFace dataset params
+    dataset: xsum
+    dataset_text_column: document
+    dataset_params:
+        split: test
+
+    # Prompt template
+    template: >-
+        Write {n} sentences to fill the gap marked as "____" between the following 2 sentences.
+        Refrain to copy the sentences provided:\n
+        {boundaries}\n\n
+        Sentences:
+
+    # Extractor params
+    extractor: gap_sentence
+    max_input_tokens: 512
+    extractor_args:
+        gap_sentence:
+            gap_token: "____"
+            max_percentage_boundaries: 0.4
+            max_sentence_span: 2
+
+# Config for model instantiation
+model_config:
+    provider: openai
+    model_name: gpt-3.5-turbo
+    api_type: CHAT
+    threads: 8
+    max_retries: 5
+    timeout: 120
+    
+# Decoding args
+generation_config:
+    # Ignore use `max_tokens` to get automatic length estimation
+    max_tokens: 512
+    temperature: 0.7
+    presence_penalty: 1.0

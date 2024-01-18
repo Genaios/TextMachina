@@ -22,6 +22,8 @@ class HuggingFaceRemoteModel(TextGenerationModel):
     """
     Generates completions using HuggingFace's models remotely deployed
     (HuggingFace's Inference API or Inference Endpoints).
+
+    Requires the definition of the `HF_TOKEN=<token>` environment variable.
     """
 
     def __init__(self, model_config: ModelConfig):

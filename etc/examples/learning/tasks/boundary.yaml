@@ -1,0 +1,55 @@
+# Config for everything related to dataset generation inputs
+input_config:
+    # Dataset metadata
+    domain: news
+    language: en
+
+    # Dataset generator parameters
+    quantity: 10
+    # `random_sample_human=False` is mandatory for boundary tasks.
+    # Thus, the human and generated texts comes from the same
+    # samples, and can be concatenated in a boundary point.
+    # TextMachina automatically disables random_sample_human
+    # for boundary tasks.
+    random_sample_human: false
+
+    # HuggingFace dataset params
+    dataset: xsum
+    dataset_text_column: document
+    dataset_params:
+        split: test
+
+    # Prompt template
+    # For boundary tasks, write your prompt template to generate continuations.
+    # TextMachina will concatenate human prefix + generated automatically.
+    template: >-
+        Complete a news article that starts by these sentences: '{sentences}'.
+        Refrain from copying the provided sentences.
+        Instead, write new ones coherent with the prefix.\n\n
+        Text: 
+
+    # Extractor params
+    # For boundary tasks, use only `sentence_prefix` or `word_prefix` extractors
+    # without specifying the `k` (number of sentences/words) argument.
+    # This way, the number of extracted sentences/words to fill the
+    # prompt will be random, and the boundaries will be in different
+    # positions for each sample.
+    extractor: sentence_prefix
+    max_input_tokens: 256
+    
+# Config for model instantiation
+# Requires `OPENAI_API_KEY=<key>` environment variable.
+model_config:
+    provider: openai
+    model_name: gpt-3.5-turbo-instruct
+    api_type: COMPLETION
+    threads: 8
+    max_retries: 5
+    timeout: 120
+    
+# Decoding args
+generation_config:
+    # Ignore use `max_tokens` to get automatic length estimation
+    # max_tokens: 100
+    temperature: 0.7
+    presence_penalty: 1.0

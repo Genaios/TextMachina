@@ -8,6 +8,10 @@ from .base import Explorer
 
 
 class DetectionExplorer(Explorer):
+    """
+    Explorer for detection tasks.
+    """
+
     def __init__(self, dataset: Dataset) -> None:
         super().__init__(dataset)
 

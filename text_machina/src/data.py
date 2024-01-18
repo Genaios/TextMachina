@@ -15,14 +15,14 @@ from .config import Config, InputConfig
 from .extractors import get_extractor
 from .models.types import GENERATION_ERROR
 from .tokenizers import get_tokenizer
-from .types import Prompt, PromptedDataset
+from .types import Prompt, PromptedDataset, TaskType
 
 _logger = get_logger(__name__)
 
 
 class PromptedDatasetBuilder:
     """
-    Manages all the prompting steps required before generating MGT.
+    Class to manage all the prompting steps required before generating MGT.
     """
 
     def __init__(self, config: Config):
@@ -71,8 +71,16 @@ class PromptedDatasetBuilder:
                 texts to be used to generate MGT.
         """
         dataset = dataset.shuffle()
-
         select_range = range(min(self.config.input.quantity, len(dataset)))
+
+        # Disable random_sample_human automatically for boundary tasks
+        if self.config.task_type == TaskType.BOUNDARY:
+            _logger.info(
+                "Automatically disabled `random_sample_human`"
+                f"for the {TaskType.BOUNDARY.value} task."
+            )
+            self.config.input.random_sample_human = False
+
         if self.config.input.random_sample_human:
             human_texts = dataset.select(select_range)[
                 self.config.input.dataset_text_column

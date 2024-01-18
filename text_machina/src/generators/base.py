@@ -14,9 +14,7 @@ _logger = get_logger(__name__)
 
 class DatasetGenerator(ABC):
     """
-    Base class to manage the text generation process.
-
-    Should be implemented for each `TaskType`.
+    Base class for dataset generators.
     """
 
     def __init__(self, config: Config) -> None:
@@ -77,7 +75,7 @@ class DatasetGenerator(ABC):
     @abstractmethod
     def _pack(self, generations: List[str], **kwargs) -> Dataset:
         """
-        Labels, combines, generally packs the generated texts.
+        Builds a dataset by packing the texts accordingly to the task.
 
         Args:
             generations (List[str]): the generated texts.

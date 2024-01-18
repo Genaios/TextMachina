@@ -25,6 +25,7 @@ def explore(
             resolve_path=True,
         ),
     ],
+    task_type: Annotated[TaskType, typer.Option(help="The type of task.")],
     metrics_path: Annotated[
         Optional[Path],
         typer.Option(
@@ -45,9 +46,6 @@ def explore(
         Optional[Path],
         typer.Option(help="The path where the exploration will be saved."),
     ] = None,
-    task_type: Annotated[
-        TaskType, typer.Option(help="The type of task.")
-    ] = TaskType.DETECTION,
     max_generations: Annotated[
         int,
         typer.Option(
@@ -97,6 +95,7 @@ def generate(
             resolve_path=True,
         ),
     ],
+    task_type: Annotated[TaskType, typer.Option(help="The type of task.")],
     run_name: Annotated[
         Optional[str],
         typer.Option(
@@ -109,9 +108,6 @@ def generate(
             help=("The path where the generations will be saved."),
         ),
     ] = None,
-    task_type: Annotated[
-        TaskType, typer.Option(help="The type of task.")
-    ] = TaskType.DETECTION,
 ) -> None:
     """
     Generates a dataset from the provided config or directory with configs.

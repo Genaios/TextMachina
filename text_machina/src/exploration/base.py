@@ -9,6 +9,11 @@ from rich.panel import Panel
 
 
 class Explorer(ABC):
+    """
+    Base class for explorers that run an interactive
+    CLI to visualize generated datasets.
+    """
+
     def __init__(self, dataset: Dataset) -> None:
         self.dataset = dataset
 
@@ -70,15 +75,10 @@ class Explorer(ABC):
             idx: index of the example in the dataset.
         """
         print("\033[H\033[J", end="")
-        # TODO: QUITAR EL TRY CUANDO LO PRUEBE TODO
-        try:
-            panels = self.get_panels(self.dataset[idx])
-            title = self.get_title(idx, self.dataset[idx])
-            rprint(Panel(Group(*panels), title=title))
-            rprint(self.command_panel)
-        except Exception as e:
-            print(e)
-            exit()
+        panels = self.get_panels(self.dataset[idx])
+        title = self.get_title(idx, self.dataset[idx])
+        rprint(Panel(Group(*panels), title=title))
+        rprint(self.command_panel)
 
     @abstractmethod
     def get_panels(self, example: Dict[str, Any]) -> List[Panel]:
