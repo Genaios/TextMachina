@@ -22,6 +22,19 @@ def prepare_tags(
     labels: List[List[Dict]],
     label_mapping: Dict[str, int],
 ) -> Dict[str, List[List[int]]]:
+    """
+    Prepares the labels for token classification.
+    This fn is designed to work with the `map` HF's function
+    using `batched=True`.
+
+    Args:
+        offset_mappings (List[List[List[int]]]): offset mappings of each text.
+        labels (List[List[Dict]]): labels of each text.
+        label_mapping (Dict[str, int]): label mapping str to int labels.
+
+    Returns:
+        Dict[str, List[List[int]]]: the tags for each text in the batch.
+    """
     tags = []
     for offset_mapping, label in zip(offset_mappings, labels):
         sample_tags = [-100]
@@ -43,6 +56,18 @@ def prepare_dataset(
     test_size: float,
     label_mapping: Dict[str, int],
 ) -> DatasetDict:
+    """
+    Prepares the dataset (tokenization, prepare labels, splitting, etc.).
+
+    Args:
+        dataset (Dataset): a dataset.
+        tokenizer (AutoTokenizer): a tokenizer.
+        test_size (float): proportion reserved for the test set.
+        label_mapping (Dict[str, int]): label mapping str to int labels.
+
+    Returns:
+        DatasetDict: a dataset with train and test splits.
+    """
     dataset = dataset.map(
         lambda batch: tokenizer(
             batch, truncation=True, return_offsets_mapping=True
@@ -63,15 +88,24 @@ def prepare_dataset(
 
 def fit(
     model: AutoModelForTokenClassification,
-    dataset: DatasetDict,
+    dataset: Dataset,
     tokenizer: AutoTokenizer,
     training_args: Dict,
 ) -> None:
+    """
+    Fits a model on a dataset.
+
+    Args:
+        model (AutoModelForTokenClassification): a model.
+        dataset (Dataset): a training dataset.
+        tokenizer (AutoTokenizer): a tokenizer.
+        training_args (Dict): args to be passed to the HF's Trainer.
+    """
     training_args = TrainingArguments(do_train=True, **training_args)
     collator = DataCollatorForTokenClassification(tokenizer=tokenizer)
     trainer = Trainer(
         model,
-        train_dataset=dataset["train"],
+        train_dataset=dataset,
         data_collator=collator,
         args=training_args,
     )
@@ -80,15 +114,26 @@ def fit(
 
 def predict(
     model: AutoModelForTokenClassification,
-    dataset: DatasetDict,
+    dataset: Dataset,
     tokenizer: AutoTokenizer,
-):
+) -> List[List[int]]:
+    """
+    Predicts a dataset using a model.
+
+    Args:
+        model (AutoModelForTokenClassification): a model.
+        dataset (Dataset): a test dataset.
+        tokenizer (AutoTokenizer): a tokenizer.
+
+    Returns:
+        List[List[int]]: list of predicted labels for each example.
+    """
     collator = DataCollatorForTokenClassification(tokenizer=tokenizer)
     trainer = Trainer(
         model,
         data_collator=collator,
     )
-    predictions = trainer.predict(dataset["test"]).label_ids
+    predictions = trainer.predict(dataset).label_ids
     return predictions
 
 
@@ -97,6 +142,17 @@ def eval(
     references: List[List[int]],
     label_mapping: Dict[int, str],
 ) -> Dict[str, float]:
+    """
+    Evaluates using `seqeval` from HF metrics.
+
+    Args:
+        predictions (List[List[int]]): list of predictions for each example.
+        references (List[List[int]]): list of gold labels for each example.
+        label_mapping (Dict[int, str]): label mapping int to str labels.
+
+    Returns:
+        Dict[str, float] -> dictionary with metric values.
+    """
     preds = [
         [label_mapping[p] for (p, l) in zip(prediction, label) if l != -100]
         for prediction, label in zip(predictions, references)
@@ -140,8 +196,8 @@ class TokenClassificationMetric(Metric):
             dataset, tokenizer, kwargs["test_size"], kwargs["label_mapping"]
         )
 
-        fit(model, dataset, tokenizer, kwargs["training_args"])
-        predictions = predict(model, dataset, tokenizer)
+        fit(model, dataset["train"], tokenizer, kwargs["training_args"])
+        predictions = predict(model, dataset["test"], tokenizer)
 
         results = eval(
             predictions,
