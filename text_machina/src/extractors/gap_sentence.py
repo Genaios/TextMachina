@@ -45,7 +45,7 @@ class GapSentence(Extractor):
 
     def prepare_human(self, human_texts: List[str]) -> List[str]:
         return [
-            " ".join(doc_sentences)
+            "".join(doc_sentences)
             for doc_sentences in self.workspace["human_spans"]
         ]
 
@@ -60,7 +60,7 @@ class GapSentence(Extractor):
         boundaries = []
         n_generated_sentences = []
         for text in texts:
-            sentences = list([sent.text for sent in text.sents])
+            sentences = list([sent.text_with_ws for sent in text.sents])
             self.workspace["human_spans"].append(sentences)
             self.workspace["positions"].append([])
             # If the text has more than one sentence, it can be used

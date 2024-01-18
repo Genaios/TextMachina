@@ -21,6 +21,15 @@ class MixCaseDatasetGenerator(DatasetGenerator):
     ) -> Tuple[List[str], List[List[Dict]]]:
         """
         Interleaves generated and human spans to build mixcase samples.
+        The `start` and `end` of the labels follow the Python convention
+        of including the `start` element and excluding the `end` one.
+        For instance, given a text: "I like Apolo. I don't like Athenea",
+        being the first sentence human-written and the second one generated,
+        the labels will be:
+        [
+            {"start": 0, "end": 14, "label": "human"},
+            {"start": 14, "end": 34, "label": "generated"},
+        ]
 
         Args:
             generations (List[str]): list of generations
@@ -37,7 +46,7 @@ class MixCaseDatasetGenerator(DatasetGenerator):
         ):
             # Text w/o sampled boundaries
             if sample_boundaries == 0:
-                text = " ".join(
+                text = "".join(
                     self.prompter.extractor.workspace["human_spans"][idx]
                 )
                 texts.append(text)
@@ -53,6 +62,12 @@ class MixCaseDatasetGenerator(DatasetGenerator):
                 sample_generations = generations[
                     prev_sample : prev_sample + sample_boundaries
                 ]
+                # Add a whitespace after generations
+                # to be concatenated with the suffix
+                sample_generations = [
+                    f"{generation} " for generation in sample_generations
+                ]
+
                 sample_spans = self.prompter.extractor.workspace["human_spans"][
                     idx
                 ]
@@ -61,29 +76,29 @@ class MixCaseDatasetGenerator(DatasetGenerator):
                 ][idx]
                 sample_labels = []
                 added = 0
-                prev_label_pos = -1
+                prev_label_pos = 0
                 # Interleave the generations in the positions determined
                 # by the extractor, and computes the labeled spans.
                 for i, position in enumerate(sample_positions):
-                    # Interleave generation
+                    # Interleave generation.
                     sample_spans.insert(
                         position + 1 + added, sample_generations[i]
                     )
                     # The generated span starts just after
                     # the prefix until the position `position`.
                     gen_start = len(
-                        " ".join(sample_spans[: position + 1 + added])
+                        "".join(sample_spans[: position + 1 + added])
                     )
                     gen_end = gen_start + len(sample_generations[i])
                     # The human span starts from the previous generated span
                     # if exists (prev_label_pos != -1).
                     human_span = LabeledSpan(
-                        start=prev_label_pos + 1,
+                        start=prev_label_pos,
                         end=gen_start,
                         label=DetectionLabels.HUMAN.value,
                     ).dict()
                     gen_span = LabeledSpan(
-                        start=gen_start + 1,
+                        start=gen_start,
                         end=gen_end,
                         label=DetectionLabels.GENERATED.value,
                     ).dict()
@@ -91,13 +106,13 @@ class MixCaseDatasetGenerator(DatasetGenerator):
                     sample_labels.append(gen_span)
                     added += 1
                     prev_label_pos = gen_end
-                text = " ".join(sample_spans)
+                text = "".join(sample_spans)
                 # Fill the labels if them do not cover all the text yet.
                 # The last span is always human by construction.
                 if int(sample_labels[-1]["end"]) < len(text):
                     sample_labels.append(
                         LabeledSpan(
-                            start=sample_labels[-1]["end"] + 1,
+                            start=sample_labels[-1]["end"],
                             end=len(text),
                             label=DetectionLabels.HUMAN.value,
                         ).dict()

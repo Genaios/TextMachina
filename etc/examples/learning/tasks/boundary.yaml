@@ -9,7 +9,7 @@ input_config:
     # `random_sample_human=False` is mandatory for boundary tasks.
     # Thus, the human and generated texts comes from the same
     # samples, and can be concatenated in a boundary point.
-    # TextMachina automatically disables random_sample_human
+    # TextMachina automatically disables `random_sample_human`
     # for boundary tasks.
     random_sample_human: false
 

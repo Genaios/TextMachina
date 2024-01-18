@@ -47,7 +47,7 @@ class GapWord(Extractor):
 
     def prepare_human(self, human_texts: List[str]) -> List[str]:
         return [
-            " ".join(doc_words) for doc_words in self.workspace["human_spans"]
+            "".join(doc_words) for doc_words in self.workspace["human_spans"]
         ]
 
     def _format_boundary(self, pair: Tuple[str, str]) -> str:
@@ -61,7 +61,7 @@ class GapWord(Extractor):
         boundaries = []
         n_generated_words = []
         for text in texts:
-            words = list([word.text for word in text])
+            words = list([word.text_with_ws for word in text])
             self.workspace["human_spans"].append(words)
             self.workspace["positions"].append([])
             # If the text has more than one word, it can be used
@@ -81,10 +81,10 @@ class GapWord(Extractor):
                             *self.args["range_boundary_size"]
                         )
                         boundary = (
-                            " ".join(
+                            "".join(
                                 words[max(0, idx - boundary_size) : idx + 1]
                             ),
-                            " ".join(words[idx + 1 : idx + 1 + boundary_size]),
+                            "".join(words[idx + 1 : idx + 1 + boundary_size]),
                         )
                         boundaries.append(self._format_boundary(boundary))
                         self.workspace["positions"][-1].append(idx)

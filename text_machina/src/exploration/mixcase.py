@@ -32,7 +32,7 @@ class MixCaseExplorer(Explorer):
         for label in example["label"]:
             start, end = label["start"], label["end"]
             color = "[red3]" if label["label"] == "human" else "[blue3]"
-            text += color + escape(example["text"][start : end + 1])
+            text += color + escape(example["text"][start:end])
         panels.append(
             Panel(
                 text,
