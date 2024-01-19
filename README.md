@@ -193,7 +193,7 @@ dataset = generator.generate()
 
 <p align="center">
   <picture>
-    <img alt="CLI interface showing generated and human text for attribution" src="https://github.com/Genaios/TextMachina/blob/main/assets/tasks/atribution.png?raw=true">
+    <img alt="CLI interface showing generated and human text for attribution" src="https://github.com/Genaios/TextMachina/blob/main/assets/tasks/attribution.png?raw=true">
     <figcaption>Example from an attribution task.</figcaption>
   </picture>
   <br/>
