@@ -104,7 +104,7 @@ def truncate(
     # tokenize with spacy multilingual model
     df["tokenized"] = spacy_pipeline(
         df["text"],
-        "xx",
+        "multilingual",
     )
     # get tokenized length: we'll keep track of this and a
     # "difference" column to know how much to truncate

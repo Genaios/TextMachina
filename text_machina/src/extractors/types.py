@@ -27,5 +27,5 @@ SPACY_MODEL_MAPPING: Final[Dict[str, str]] = {
     "es": "es_core_news_sm",
     "sv": "sv_core_news_sm",
     "uk": "uk_core_news_sm",
-    "xx": "xx_sent_ud_sm",
+    "multilingual": "xx_sent_ud_sm",
 }

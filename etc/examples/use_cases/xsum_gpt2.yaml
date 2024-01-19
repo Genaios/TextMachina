@@ -1,0 +1,43 @@
+# Config for everything related to dataset generation inputs
+input_config:
+    # Dataset metadata
+    domain: news
+    language: en
+
+    # Dataset generator parameters
+    quantity: 10
+    
+    # HuggingFace dataset params
+    dataset: xsum
+    dataset_text_column: document
+    dataset_params:
+        split: test
+    
+    # Prompt template
+    template: >-
+        Write a text starting by this sentence: '{sentences}'.\n\nText: 
+    
+    # Extractor params
+    extractor: sentence_prefix
+    max_input_tokens: 256
+    extractor_args:
+        sentence_prefix:
+            k: 1
+
+# Config for model instantiation
+model_config: 
+    provider: hf_local
+    model_name: gpt2
+    quantization: none
+    device: cuda
+    batch_size: 16
+
+# Decoding args
+generation_config:
+    # Ignore `max_new_tokens` or `min_new_tokens` to get automatic length estimation
+    # min_new_tokens: 5
+    # max_new_tokens: 10
+    do_sample: true
+    top_p: 0.9
+    temperature: 0.6
+    repetition_penalty: 2.0

@@ -5,14 +5,12 @@ from datasets import Dataset, concatenate_datasets
 from ..common.exceptions import DatasetGenerationError
 from ..config import Config
 from ..types import DetectionLabels, Placeholders
-from .base import ClassificationDatasetGenerator
+from .base import DatasetGenerator
 
 
-class DetectionDatasetGenerator(ClassificationDatasetGenerator):
+class DetectionDatasetGenerator(DatasetGenerator):
     """
     Dataset generator for the detection task type.
-
-    Implements `_pack` by correctly labeling the dataset for detection.
     """
 
     def __init__(self, config: Config) -> None:

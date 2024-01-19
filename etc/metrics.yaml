@@ -23,4 +23,15 @@ simple_model:
 
 perplexity:
   model_id: "gpt2"
-     
+
+token_classification:
+  model_args:
+    pretrained_model_name_or_path: distilbert-base-uncased
+  training_args:
+    per_device_train_batch_size: 8
+    num_train_epochs: 1
+    output_dir: /tmp
+  label_mapping:
+    human: 0
+    generated: 1
+  test_size: 0.2

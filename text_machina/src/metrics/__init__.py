@@ -13,6 +13,7 @@ METRICS: Mapping[str, str] = {
     "repetition_diversity": "RepetitionDiversityMetric",
     "simple_model": "SimpleModelMetric",
     "perplexity": "PerplexityMetric",
+    "token_classification": "TokenClassificationMetric",
 }
 
 
@@ -60,6 +61,7 @@ def get_metric(task_type: TaskType, name: str) -> Metric:
         )
     except (ModuleNotFoundError, ImportError):
         raise MissingMetricError(metric=name)
+
     return metric_class(task_type, name)
 
 

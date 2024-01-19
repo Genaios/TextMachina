@@ -7,11 +7,13 @@ from .attribution import AttributionDatasetGenerator
 from .base import DatasetGenerator
 from .boundary import BoundaryDatasetGenerator
 from .detection import DetectionDatasetGenerator
+from .mixcase import MixCaseDatasetGenerator
 
 GENERATORS: Mapping[TaskType, Type[DatasetGenerator]] = {
     TaskType.DETECTION: DetectionDatasetGenerator,
     TaskType.ATTRIBUTION: AttributionDatasetGenerator,
     TaskType.BOUNDARY: BoundaryDatasetGenerator,
+    TaskType.MIXCASE: MixCaseDatasetGenerator,
 }
 
 

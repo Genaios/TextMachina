@@ -48,7 +48,6 @@ def get_spacy_model(language: str) -> spacy.lang:
         nlp = spacy.load(spacy_model)
     except OSError:
         _logger.info(f"Downloading {spacy_model} from SpaCy.")
-
         spacy.cli.download(spacy_model)
         nlp = spacy.load(spacy_model)
     return nlp

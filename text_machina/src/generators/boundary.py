@@ -4,14 +4,12 @@ from datasets import Dataset
 
 from ..common.exceptions import DatasetGenerationError
 from ..config import Config
-from .base import ClassificationDatasetGenerator
+from .base import DatasetGenerator
 
 
-class BoundaryDatasetGenerator(ClassificationDatasetGenerator):
+class BoundaryDatasetGenerator(DatasetGenerator):
     """
     Dataset generator for the boundary task type.
-
-    Implements `_pack` to label the boundary point.
     """
 
     def __init__(self, config: Config) -> None:

@@ -4,14 +4,12 @@ from datasets import Dataset
 
 from ..common.exceptions import DatasetGenerationError
 from ..config import Config
-from .base import ClassificationDatasetGenerator
+from .base import DatasetGenerator
 
 
-class AttributionDatasetGenerator(ClassificationDatasetGenerator):
+class AttributionDatasetGenerator(DatasetGenerator):
     """
     Dataset generator for the attribution task type.
-
-    Implements `_pack` by correctly labeling the dataset for attribution.
     """
 
     def __init__(self, config: Config) -> None:

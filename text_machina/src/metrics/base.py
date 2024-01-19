@@ -12,6 +12,10 @@ _logger = get_logger(__name__)
 
 
 class Metric(ABC):
+    """
+    Base class for metrics.
+    """
+
     def __init__(self, task_type: TaskType, name: str) -> None:
         self.name = name
         self.task_type = task_type

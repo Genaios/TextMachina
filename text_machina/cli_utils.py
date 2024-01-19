@@ -16,8 +16,8 @@ from .src.data import (
     get_save_path,
     serialize_dataset,
 )
+from .src.exploration import get_explorer
 from .src.generators import get_generator
-from .src.interactive import step as _step
 from .src.metrics import run_metrics as _run_metrics
 from .src.models.types import GENERATION_ERROR
 from .src.postprocessing import filter_by_language, postprocess
@@ -193,14 +193,14 @@ def _explore(
     save_dir: Path,
     run_name: str,
     task_type: TaskType,
-    step: bool,
+    interactive: bool,
     max_generations: int,
 ) -> None:
     """
     Carries out the exploration steps:
     - create a small dataset
     - generate a set of metrics based on the task type
-    - step through the dataset
+    - interactive exploration through the dataset
 
     Args:
         config_path (Path): path containing YAML config files for generation.
@@ -208,7 +208,7 @@ def _explore(
         save_dir (Path): root dir where to save the generated dataset.
         run_name (str): name of this run.
         task_type (TaskType): the type of task to be explored.
-        step (bool): whether to step through the dataset.
+        interactive(bool): whether to step interactively through the dataset.
         max_generations (int): the maximum number of texts to generate
             for each config. Ignored if the dataset has already been generated.
     """
@@ -228,5 +228,6 @@ def _explore(
             _run_metrics(dataset, task_type, save_dir, metrics, metric_args)
 
     # Show examples in console
-    if step:
-        _step(dataset, task_type)
+    if interactive:
+        explorer = get_explorer(task_type, dataset)
+        explorer.step()

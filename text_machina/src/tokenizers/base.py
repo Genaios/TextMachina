@@ -3,7 +3,9 @@ from typing import Dict, List
 
 
 class Tokenizer(ABC):
-    """Tokenizer class to wrap all the tokenizers under the same interface."""
+    """
+    Base class for tokenizers.
+    """
 
     def __init__(self, model_name: str):
         self.model_name = model_name

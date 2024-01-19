@@ -1,4 +1,3 @@
-import re
 from random import randint
 from typing import Dict, List
 
@@ -11,21 +10,24 @@ from .utils import spacy_pipeline
 
 
 class SentencePrefix(Extractor):
+    """
+    Extractor that fills the prompt template with a sentence
+    prefix extracted from a text column of a dataset.
+
+    This extractor needs a template placeholder named {sentences}.
+
+    This extractor allows to pass the following arguments in the
+    `extractor_args` field from the config:
+        - k (int): number of sentences in the prefix. If not specified,
+                   `k` will be random for each sample.
+    """
+
     def __init__(self, input_config: InputConfig, task_type: TaskType):
         super().__init__(input_config, task_type)
-
-        regex = r"{(sentences(@\d+?)?)}"
-        self.placeholder, n_sentences_match = re.findall(
-            regex, self.input_config.template
-        )[0]
-
-        # Random if not sentence length specified,
-        # or sentence length if specified.
-        if not n_sentences_match:
-            self.n_sentences = lambda x: randint(1, max(1, len(x) - 1))
-        else:
-            self.n_sentences = lambda x: int(n_sentences_match.replace("@", ""))
-
+        self.args = self.input_config.extractor_args.get("sentence_prefix", {})
+        self.n_sentences = lambda x: self.args.get(
+            "k", randint(1, max(1, len(x) - 1))
+        )
         self.sampled_positions: List[int] = []
 
     def prepare_human(self, human_texts: List[str]) -> List[str]:
@@ -87,4 +89,4 @@ class SentencePrefix(Extractor):
                 "".join([sent.text_with_ws for sent in doc_sents[:n_sentences]])
             )
 
-        return {self.placeholder: output_texts}
+        return {"sentences": output_texts}

@@ -1,0 +1,48 @@
+# Config for everything related to dataset generation inputs
+input_config:
+    # Dataset metadata
+    domain: news
+    language: en
+
+    # Dataset generator parameters
+    quantity: 10
+    random_sample_human: true
+
+    # HuggingFace dataset params
+    dataset: xsum
+    dataset_text_column: document
+    dataset_params:
+        split: test
+
+    # Prompt template
+    template: >-
+        Write {n} words to fill the gap marked as "____" between the following 2 word spans.
+        Refrain to copy the word spans provided:\n
+        {boundaries}\n\n
+        words:
+
+    # Extractor params
+    extractor: word_gap
+    max_input_tokens: 512
+    extractor_args:
+        word_gap:
+            gap_token: "____"
+            max_percentage_boundaries: 0.01
+            max_word_span: 20
+            range_boundary_size: [20, 25]
+
+# Config for model instantiation
+model_config:
+    provider: openai
+    model_name: gpt-4
+    api_type: CHAT
+    threads: 8
+    max_retries: 5
+    timeout: 120
+    
+# Decoding args
+generation_config:
+    # Ignore use `max_tokens` to get automatic length estimation
+    max_tokens: 512
+    temperature: 0.7
+    presence_penalty: 1.0

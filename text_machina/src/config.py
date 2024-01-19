@@ -52,7 +52,9 @@ class InputConfig(BaseModel):
             " prompt inputs extracted with the extractors."
         ),
     )
-
+    extractor_args: Dict[str, Dict[str, Any]] = Field(
+        default={}, desc="Extractors-specific arguments."
+    )
     language: str = Field(
         default="en",
         desc="Language of the dataset used.",
@@ -68,7 +70,7 @@ class InputConfig(BaseModel):
             lang.alpha_2
             for lang in pycountry.languages
             if hasattr(lang, "alpha_2")
-        ]
+        ] + ["multilingual"]
 
         if language not in allowed_languages:
             from .common import InvalidLanguage

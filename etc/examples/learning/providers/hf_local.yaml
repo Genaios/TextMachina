@@ -1,31 +1,33 @@
 # Config for everything related to dataset generation inputs
 input_config:
     # Dataset metadata
-    domain: news
+    domain: tweets
     language: en
 
     # Dataset generator parameters
     quantity: 10
+    random_sample_human: true
     
     # HuggingFace dataset params
-    dataset: xsum
-    dataset_text_column: document
+    dataset: tweet_eval
+    dataset_text_column: text
     dataset_params:
-        split: test
-    
+        split: train
+        name: irony
+
     # Prompt template
     template: >-
-        Write a text starting by these sentences: '{sentences}'.\n\nText: 
-    
+        Write a tweet response to the following tweet:\n'{text}'\n\nTweet: 
+
     # Extractor params
-    extractor: sentence_prefix
+    extractor: auxiliary
     max_input_tokens: 256
 
 # Config for model instantiation
-model_config: 
+model_config:
     provider: hf_local
-    model_name: gpt2
-    quantization: none
+    model_name: bigscience/bloomz-560m
+    quantization: int4_bf16
     device: cuda
     batch_size: 16
 

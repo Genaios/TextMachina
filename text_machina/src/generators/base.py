@@ -8,21 +8,18 @@ from ..config import Config
 from ..constrainers import get_length_constrainer
 from ..data import PromptedDatasetBuilder
 from ..models import get_model
-from ..types import PromptedDataset
 
 _logger = get_logger(__name__)
 
 
 class DatasetGenerator(ABC):
     """
-    Base class to manage the text generation process.
-
-    Should be implemented for each `TaskType`.
+    Base class for dataset generators.
     """
 
     def __init__(self, config: Config) -> None:
         self.config = config
-        self.model = get_model(config.model)
+        self.model = get_model(self.config.model)
         self.prompter = PromptedDatasetBuilder(self.config)
 
     def generate(self) -> Dataset:
@@ -37,22 +34,6 @@ class DatasetGenerator(ABC):
         dataset = self.add_config_info(dataset)
         return dataset
 
-    def add_config_info(self, dataset: Dataset) -> Dataset:
-        """
-        Adds config information to the dataset.
-
-        Args:
-            dataset (Dataset): the dataset to add config information to.
-        Returns:
-            Dataset: the dataset with config information added.
-        """
-        dataset = dataset.add_column(
-            "config_path",
-            [str(self.config.path)] * len(dataset),
-        )
-        return dataset
-
-    @abstractmethod
     def _generate(self) -> Tuple[List[str], Dict]:
         """
         Generates a dataset based on the provided config.
@@ -60,42 +41,6 @@ class DatasetGenerator(ABC):
         Returns:
             Tuple[List[str], Dict]: a tuple of the generated texts and
                 additional arguments to use for dataset packing.
-        """
-        ...
-
-    @abstractmethod
-    def _pack(self, generations: List[str], **kwargs) -> Dataset:
-        """
-        Labels, combines, generally packs the generated texts.
-
-        Args:
-            generations (List[str]): the generated texts.
-            *args: additional arguments.
-            **kwargs: additional keyword arguments.
-
-        Returns:
-            Dataset: the final labeled dataset.
-        """
-        ...
-
-
-class ClassificationDatasetGenerator(DatasetGenerator):
-    """
-    Dataset generator for classification tasks such as detection or attribution.
-
-    Implements `_generate` specifically for classification tasks.
-    Note that `_pack` still needs to be implemented.
-    """
-
-    def __init__(self, config: Config) -> None:
-        super().__init__(config=config)
-
-    def _generate(self) -> Tuple[List[str], Dict[str, PromptedDataset]]:
-        """
-        Carries out generation process:
-        - Builds a prompt for each human sample in a given dataset
-        - Constrains generation length based on human length distribution
-        - Runs model inference.
         """
         # prepare inputs
         prompted_dataset = self.prompter.build()
@@ -126,3 +71,33 @@ class ClassificationDatasetGenerator(DatasetGenerator):
         )
 
         return generations, {"prompted_dataset": prompted_dataset}
+
+    @abstractmethod
+    def _pack(self, generations: List[str], **kwargs) -> Dataset:
+        """
+        Builds a dataset by packing the texts accordingly to the task.
+
+        Args:
+            generations (List[str]): the generated texts.
+            *args: additional arguments.
+            **kwargs: additional keyword arguments.
+
+        Returns:
+            Dataset: the final labeled dataset.
+        """
+        ...
+
+    def add_config_info(self, dataset: Dataset) -> Dataset:
+        """
+        Adds config information to the dataset.
+
+        Args:
+            dataset (Dataset): the dataset to add config information to.
+        Returns:
+            Dataset: the dataset with config information added.
+        """
+        dataset = dataset.add_column(
+            "config_path",
+            [str(self.config.path)] * len(dataset),
+        )
+        return dataset

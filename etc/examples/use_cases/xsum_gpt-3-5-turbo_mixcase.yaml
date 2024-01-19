@@ -16,21 +16,25 @@ input_config:
 
     # Prompt template
     template: >-
-        Write a news article whose summary is '{summary}',
-        using the entities: {entities}\n\nArticle: 
+        Write {n} sentences to fill the gap marked as "____" between the following 2 sentences.
+        Refrain to copy the sentences provided:\n
+        {boundaries}\n\n
+        Sentences:
 
     # Extractor params
-    extractor: combined
-    extractors_list:
-        - auxiliary.Auxiliary
-        - entity_list.EntityList
-    max_input_tokens: 256
-    
+    extractor: sentence_gap
+    max_input_tokens: 512
+    extractor_args:
+        sentence_gap:
+            gap_token: "____"
+            max_percentage_boundaries: 0.4
+            max_sentence_span: 2
+
 # Config for model instantiation
 model_config:
     provider: openai
-    model_name: gpt-3.5-turbo-instruct
-    api_type: COMPLETION
+    model_name: gpt-3.5-turbo
+    api_type: CHAT
     threads: 8
     max_retries: 5
     timeout: 120
@@ -38,6 +42,6 @@ model_config:
 # Decoding args
 generation_config:
     # Ignore use `max_tokens` to get automatic length estimation
-    # max_tokens: 100
+    max_tokens: 512
     temperature: 0.7
     presence_penalty: 1.0

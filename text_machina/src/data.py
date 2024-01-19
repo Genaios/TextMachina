@@ -15,18 +15,22 @@ from .config import Config, InputConfig
 from .extractors import get_extractor
 from .models.types import GENERATION_ERROR
 from .tokenizers import get_tokenizer
-from .types import Prompt, PromptedDataset
+from .types import Prompt, PromptedDataset, TaskType
 
 _logger = get_logger(__name__)
 
 
 class PromptedDatasetBuilder:
     """
-    Manages all the prompting steps required before generating MGT.
+    Class to manage all the prompting steps required before generating MGT.
     """
 
     def __init__(self, config: Config):
         self.config = config
+        self.prompt = self.get_prompt()
+        self.extractor = get_extractor(
+            self.prompt.extractor, self.config.input, self.config.task_type
+        )
 
     def build(self) -> PromptedDataset:
         """
@@ -36,25 +40,19 @@ class PromptedDatasetBuilder:
         Returns:
             PromptedDataset: a dataset with prompted and human texts.
         """
-        # get prompt and prepare config
-        prompt = self.get_prompt()
-
         # load and prepare dataset
         dataset = load_dataset_from_config(self.config.input)
 
         # sample human texts
         human_texts, dataset = self.sampling(dataset)
 
-        # get the extractor, compute prompt inputs and prepare human texts
-        extractor = get_extractor(
-            prompt.extractor, self.config.input, self.config.task_type
-        )
-        prompt_inputs = extractor.extract(dataset)
-        human_texts = extractor.prepare_human(human_texts)
+        # compute prompt inputs and prepare human texts
+        prompt_inputs = self.extractor.extract(dataset)
+        human_texts = self.extractor.prepare_human(human_texts)
 
         # truncate the prompt inputs and format the prompts
         prompt_inputs = self.truncate_inputs(prompt_inputs)
-        inputs = format_prompt(prompt.template, prompt_inputs)
+        inputs = format_prompt(self.prompt.template, prompt_inputs)
 
         return PromptedDataset(prompted_texts=inputs, human_texts=human_texts)
 
@@ -73,8 +71,16 @@ class PromptedDatasetBuilder:
                 texts to be used to generate MGT.
         """
         dataset = dataset.shuffle()
-
         select_range = range(min(self.config.input.quantity, len(dataset)))
+
+        # Disable random_sample_human automatically for boundary tasks
+        if self.config.task_type == TaskType.BOUNDARY:
+            _logger.info(
+                "Automatically disabling `random_sample_human`"
+                f"for the {TaskType.BOUNDARY.value} task."
+            )
+            self.config.input.random_sample_human = False
+
         if self.config.input.random_sample_human:
             human_texts = dataset.select(select_range)[
                 self.config.input.dataset_text_column

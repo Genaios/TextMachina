@@ -8,6 +8,14 @@ from .base import Extractor
 
 
 class Dummy(Extractor):
+    """
+    Dummy extractor that fills the prompt template with empty texts.
+
+    This extractor needs one template placeholder named {dummy}.
+
+    This extractor does not need specific arguments.
+    """
+
     def __init__(self, input_config: InputConfig, task_type: TaskType):
         super().__init__(input_config, task_type)
 

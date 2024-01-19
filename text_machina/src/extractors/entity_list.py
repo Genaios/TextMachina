@@ -28,6 +28,15 @@ def extract_entities(processed_text: spacy.tokens.Doc) -> Set[str]:
 
 
 class EntityList(Extractor):
+    """
+    Extractor that fills the prompt template with entities
+    extracted from a text column in the dataset.
+
+    This extractor needs a template placeholder named {entities}.
+
+    This extractor does not need specific arguments.
+    """
+
     def __init__(self, input_config: InputConfig, task_type: TaskType):
         super().__init__(input_config, task_type)
 

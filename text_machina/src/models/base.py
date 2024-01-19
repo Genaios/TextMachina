@@ -9,6 +9,10 @@ from ..config import ModelConfig
 
 
 class TextGenerationModel(ABC):
+    """
+    Base class for LLMs.
+    """
+
     def __init__(self, model_config: ModelConfig):
         self.model_config = deepcopy(model_config)
 

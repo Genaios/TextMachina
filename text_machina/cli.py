@@ -25,6 +25,7 @@ def explore(
             resolve_path=True,
         ),
     ],
+    task_type: Annotated[TaskType, typer.Option(help="The type of task.")],
     metrics_path: Annotated[
         Optional[Path],
         typer.Option(
@@ -45,17 +46,17 @@ def explore(
         Optional[Path],
         typer.Option(help="The path where the exploration will be saved."),
     ] = None,
-    task_type: Annotated[
-        TaskType, typer.Option(help="The type of task.")
-    ] = TaskType.DETECTION,
     max_generations: Annotated[
         int,
         typer.Option(
             help="The maximum number of texts to generate per config."
         ),
     ] = 10,
-    step: Annotated[
-        bool, typer.Option(help="Whether to step through the generated texts")
+    interactive: Annotated[
+        bool,
+        typer.Option(
+            help="Whether to step interactively through the generated texts"
+        ),
     ] = True,
 ) -> None:
     """
@@ -77,7 +78,7 @@ def explore(
         save_dir,
         run_name,
         task_type,
-        step,
+        interactive,
         max_generations,
     )
 
@@ -94,6 +95,7 @@ def generate(
             resolve_path=True,
         ),
     ],
+    task_type: Annotated[TaskType, typer.Option(help="The type of task.")],
     run_name: Annotated[
         Optional[str],
         typer.Option(
@@ -106,9 +108,6 @@ def generate(
             help=("The path where the generations will be saved."),
         ),
     ] = None,
-    task_type: Annotated[
-        TaskType, typer.Option(help="The type of task.")
-    ] = TaskType.DETECTION,
 ) -> None:
     """
     Generates a dataset from the provided config or directory with configs.
