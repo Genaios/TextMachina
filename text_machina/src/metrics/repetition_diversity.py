@@ -13,6 +13,8 @@ class RepetitionDiversityMetric(Metric):
     """
     Implements the repetition and diversity metrics.
     See Sec. 4.1.2: https://arxiv.org/pdf/2202.06417.pdf
+
+    Supported tasks: detection, attribution, and boundary.
     """
 
     def _run(self, dataset: Dataset, **kwargs) -> pd.DataFrame:

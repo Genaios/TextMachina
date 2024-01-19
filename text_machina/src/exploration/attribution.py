@@ -22,7 +22,7 @@ class AttributionExplorer(Explorer):
             panels.append(
                 Panel(
                     escape(example["prompt"]),
-                    title="[red3]prompt",
+                    title="[red3]Prompt",
                     border_style="red3",
                     style="white",
                 )
@@ -32,7 +32,7 @@ class AttributionExplorer(Explorer):
         panels.append(
             Panel(
                 escape(example["text"]),
-                title="[turquoise2]text",
+                title="[turquoise2]Text",
                 border_style="turquoise2",
                 style="white",
             )

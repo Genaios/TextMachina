@@ -10,7 +10,7 @@ from .base import Extractor
 from .utils import spacy_pipeline
 
 
-class GapWord(Extractor):
+class WordGap(Extractor):
     """
     Extractor that fills the prompt template with a boundary of
     two word spans (left-side and right-side of a sampled word),
@@ -38,7 +38,7 @@ class GapWord(Extractor):
 
     def __init__(self, input_config: InputConfig, task_type: TaskType):
         super().__init__(input_config, task_type)
-        self.args = self.input_config.extractor_args.get("gap_word", {})
+        self.args = self.input_config.extractor_args.get("word_gap", {})
         self.workspace = {
             "positions": [],
             "human_spans": [],
@@ -61,7 +61,7 @@ class GapWord(Extractor):
         boundaries = []
         n_generated_words = []
         for text in texts:
-            words = list([word.text_with_ws for word in text])
+            words = [word.text_with_ws for word in text]
             self.workspace["human_spans"].append(words)
             self.workspace["positions"].append([])
             # If the text has more than one word, it can be used

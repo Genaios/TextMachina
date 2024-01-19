@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, model_validator
 
 
 class DetectionLabels(Enum):
@@ -48,6 +48,15 @@ class TaskType(str, Enum):
 
 
 class LabeledSpan(BaseModel):
-    start: int
+    start: int = Field(ge=0)
     end: int
     label: str
+
+    @model_validator(mode="after")
+    def check_passwords_match(self) -> "LabeledSpan":
+        if not (self.start < self.end):
+            raise ValueError(
+                "`start` must be lower than `end` in a LabeledSpan"
+                f" (`start`={self.start}, `end`={self.end})"
+            )
+        return self

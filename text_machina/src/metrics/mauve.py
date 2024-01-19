@@ -15,7 +15,7 @@ class MAUVEMetric(Metric):
     """
     Implements the MAUVE metric: https://arxiv.org/abs/2102.01454
 
-    Currently only supports the MGT detection task.
+    Supported tasks: detection.
     """
 
     def _run(self, dataset: Dataset, **kwargs) -> Dict:

@@ -76,7 +76,7 @@ class PromptedDatasetBuilder:
         # Disable random_sample_human automatically for boundary tasks
         if self.config.task_type == TaskType.BOUNDARY:
             _logger.info(
-                "Automatically disabled `random_sample_human`"
+                "Automatically disabling `random_sample_human`"
                 f"for the {TaskType.BOUNDARY.value} task."
             )
             self.config.input.random_sample_human = False

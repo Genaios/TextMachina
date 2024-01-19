@@ -10,7 +10,7 @@ from .base import Extractor
 from .utils import spacy_pipeline
 
 
-class GapSentence(Extractor):
+class SentenceGap(Extractor):
     """
     Extractor that fills the prompt template with a boundary of
     two sentences (left-side and right-side of a sampled sentence),
@@ -36,7 +36,7 @@ class GapSentence(Extractor):
 
     def __init__(self, input_config: InputConfig, task_type: TaskType):
         super().__init__(input_config, task_type)
-        self.args = self.input_config.extractor_args.get("gap_sentence", {})
+        self.args = self.input_config.extractor_args.get("sentence_gap", {})
         self.workspace = {
             "positions": [],
             "human_spans": [],

@@ -12,6 +12,8 @@ from .base import Metric
 class PerplexityMetric(Metric):
     """
     Implements the perplexity metric.
+
+    Supported tasks: detection, attribution, and boundary.
     """
 
     def _run(self, dataset: Dataset, **kwargs) -> pd.DataFrame:

@@ -22,10 +22,10 @@ input_config:
         words:
 
     # Extractor params
-    extractor: gap_word
+    extractor: word_gap
     max_input_tokens: 512
     extractor_args:
-        gap_word:
+        word_gap:
             gap_token: "____"
             max_percentage_boundaries: 0.01
             max_word_span: 20

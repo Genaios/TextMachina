@@ -22,10 +22,10 @@ input_config:
         Sentences:
 
     # Extractor params
-    extractor: gap_sentence
+    extractor: sentence_gap
     max_input_tokens: 512
     extractor_args:
-        gap_sentence:
+        sentence_gap:
             gap_token: "____"
             max_percentage_boundaries: 0.4
             max_sentence_span: 2

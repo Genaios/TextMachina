@@ -29,13 +29,13 @@ input_config:
         Sentences:
 
     # Extractor params
-    # For mixcase tasks, use only `gap_sentence` or `gap_word` extractors.
-    # Read the extractors/gap_sentence.py and extractors/gap_word.py to
+    # For mixcase tasks, use only `sentence_gap` or `word_gap` extractors.
+    # Read the extractors/sentence_gap.py and extractors/word_gap.py to
     # figure the arguments you can use for these extractors.
-    extractor: gap_sentence
+    extractor: sentence_gap
     max_input_tokens: 512
     extractor_args:
-        gap_sentence:
+        sentence_gap:
             gap_token: "____"
             max_percentage_boundaries: 0.4
             max_sentence_span: 2

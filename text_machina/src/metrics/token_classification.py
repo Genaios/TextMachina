@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Dict, List
 
 import evaluate
+import numpy as np
 import pandas as pd
 from datasets import Dataset, DatasetDict
 from transformers import (
@@ -13,17 +14,19 @@ from transformers import (
 )
 
 from ..common.exceptions import InvalidTaskTypeForMetric
-from ..types import TaskType
+from ..types import DetectionLabels, TaskType
 from .base import Metric
 
 
-def prepare_tags(
+def prepare_tags_for_mixcase(
     offset_mappings: List[List[List[int]]],
     labels: List[List[Dict]],
     label_mapping: Dict[str, int],
 ) -> Dict[str, List[List[int]]]:
     """
-    Prepares the labels for token classification.
+    Prepares the labels for mixcase tasks to be addressed
+    as token classification tasks.
+
     This fn is designed to work with the `map` HF's function
     using `batched=True`.
 
@@ -50,8 +53,44 @@ def prepare_tags(
     return {"labels": tags}
 
 
+def prepare_tags_for_boundary(
+    offset_mappings: List[List[List[int]]],
+    labels: List[int],
+    label_mapping: Dict[str, int],
+) -> Dict[str, List[List[int]]]:
+    """
+    Prepares the labels for boundary tasks to be addressed
+    as token classification tasks.
+
+    This fn is designed to work with the `map` HF's function
+    using `batched=True`.
+
+    Args:
+        offset_mappings (List[List[List[int]]]): offset mappings of each text.
+        labels (List[int): labels of each text.
+        label_mapping (Dict[str, int]): label mapping str to int labels.
+
+    Returns:
+        Dict[str, List[List[int]]]: the tags for each text in the batch.
+    """
+    tags = []
+    for offset_mapping, label in zip(offset_mappings, labels):
+        sample_tags = [-100]
+        for _, char_end in offset_mapping[1:-1]:
+            if char_end <= label:
+                sample_tags.append(label_mapping[DetectionLabels.HUMAN.value])
+            else:
+                sample_tags.append(
+                    label_mapping[DetectionLabels.GENERATED.value]
+                )
+        sample_tags.append(-100)
+        tags.append(sample_tags)
+    return {"labels": tags}
+
+
 def prepare_dataset(
     dataset: Dataset,
+    task_type: TaskType,
     tokenizer: AutoTokenizer,
     test_size: float,
     label_mapping: Dict[str, int],
@@ -76,7 +115,9 @@ def prepare_dataset(
         batched=True,
     )
     dataset = dataset.map(
-        prepare_tags,
+        prepare_tags_for_mixcase
+        if task_type == TaskType.MIXCASE
+        else prepare_tags_for_boundary,
         input_columns=["offset_mapping", "label"],
         batched=True,
         fn_kwargs={"label_mapping": label_mapping},
@@ -133,8 +174,8 @@ def predict(
         model,
         data_collator=collator,
     )
-    predictions = trainer.predict(dataset).label_ids
-    return predictions
+    predictions = trainer.predict(dataset).predictions
+    return np.argmax(predictions, axis=-1)
 
 
 def eval(
@@ -163,7 +204,7 @@ def eval(
         for prediction, label in zip(preds, references)
     ]
 
-    preds = [pred[:-1] for pred in preds]
+    preds = [pred[1:] for pred in preds]
 
     seqeval = evaluate.load("seqeval")
     results = seqeval.compute(predictions=preds, references=refs)
@@ -180,10 +221,12 @@ class TokenClassificationMetric(Metric):
     """
     Implements a HF token classification model
     for evaluating a mixcase dataset.
+
+    Supported tasks: boundary and mixcase.
     """
 
     def _run(self, dataset: Dataset, **kwargs) -> pd.DataFrame:
-        if self.task_type != TaskType.MIXCASE:
+        if self.task_type not in [TaskType.MIXCASE, TaskType.BOUNDARY]:
             raise InvalidTaskTypeForMetric(self.name, self.task_type)
 
         model = AutoModelForTokenClassification.from_pretrained(
@@ -192,8 +235,13 @@ class TokenClassificationMetric(Metric):
         tokenizer = AutoTokenizer.from_pretrained(
             kwargs["model_args"]["pretrained_model_name_or_path"]
         )
+
         dataset = prepare_dataset(
-            dataset, tokenizer, kwargs["test_size"], kwargs["label_mapping"]
+            dataset,
+            self.task_type,
+            tokenizer,
+            kwargs["test_size"],
+            kwargs["label_mapping"],
         )
 
         fit(model, dataset["train"], tokenizer, kwargs["training_args"])

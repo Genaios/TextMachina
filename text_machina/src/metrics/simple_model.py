@@ -19,7 +19,10 @@ from .base import Metric
 
 class SimpleModelMetric(Metric):
     """
-    Implements simple baseline models evaluated with stratified k-fold validation.
+    Implements simple baseline models evaluated with
+    stratified k-fold validation.
+
+    Supported tasks: detection, attribution, and boundary.
     """
 
     def _run(self, dataset: Dataset, **kwargs) -> Dict[int, pd.DataFrame]:

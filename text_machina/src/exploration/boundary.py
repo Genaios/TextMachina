@@ -24,7 +24,7 @@ class BoundaryExplorer(Explorer):
         panels.append(
             Panel(
                 text,
-                title="[turquoise2]text",
+                title="[turquoise2]Text",
                 border_style="turquoise2",
                 style="white",
             )
@@ -37,7 +37,7 @@ class BoundaryExplorer(Explorer):
         extractor = example["extractor"]
 
         title = f"[tan]{idx}[/]: "
-        title += f"[violet]{model}[/] text "
+        title += f"[red3]human[/] - [blue3]{model}[/] text "
         title += f"in domain [sea_green3]{domain}[/]"
         title += f" using extractor [yellow]{extractor}"
 

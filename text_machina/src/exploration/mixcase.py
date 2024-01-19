@@ -22,8 +22,8 @@ class MixCaseExplorer(Explorer):
             panels.append(
                 Panel(
                     escape(prompt),
-                    title=f"[red3]prompt {idx}",
-                    border_style="red3",
+                    title=f"[red3]Prompt {idx}",
+                    border_style="turquoise2",
                     style="white",
                 )
             )
@@ -33,10 +33,17 @@ class MixCaseExplorer(Explorer):
             start, end = label["start"], label["end"]
             color = "[red3]" if label["label"] == "human" else "[blue3]"
             text += color + escape(example["text"][start:end])
+
+        model = example["model"]
+        title = (
+            "[red3]Human[/] text"
+            if model == "human"
+            else f"Mixcase text from [blue3]{model}[/] and [red3]human[/]"
+        )
         panels.append(
             Panel(
                 text,
-                title="[turquoise2]text",
+                title=title,
                 border_style="turquoise2",
                 style="white",
             )
@@ -44,13 +51,12 @@ class MixCaseExplorer(Explorer):
         return panels
 
     def get_title(self, idx: int, example: Dict[str, Any]) -> str:
-        model = example["model"]
+        example["model"]
         domain = example["domain"]
         extractor = example["extractor"]
 
         title = f"[tan]{idx}[/]: "
-        title += f"[violet]{model}[/] text "
-        title += f"in domain [sea_green3]{domain}[/]"
+        title += f"Mixcase text in domain [sea_green3]{domain}[/]"
         title += f" using extractor [yellow]{extractor}"
 
         return title
