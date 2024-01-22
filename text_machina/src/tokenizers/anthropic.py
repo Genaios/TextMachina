@@ -14,7 +14,7 @@ class AnthropicTokenizer(Tokenizer):
     """
 
     def __init__(self, model_name: str):
-        self.model_name = model_name
+        super().__init__(model_name)
         self.tokenizer = Anthropic(
             api_key=os.environ["ANTHROPIC_API_KEY"]
         ).get_tokenizer()

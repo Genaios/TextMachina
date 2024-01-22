@@ -21,6 +21,7 @@ class Tokenizer(ABC):
         Returns:
             List[int]: list of token ids.
         """
+        ...
 
     @abstractmethod
     def decode(self, tokens: List[int]) -> str:
@@ -33,6 +34,7 @@ class Tokenizer(ABC):
         Returns:
             text (str): decoded text.
         """
+        ...
 
     def get_token_length(self, text: str) -> int:
         """

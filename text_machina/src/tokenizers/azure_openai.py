@@ -5,11 +5,11 @@ import tiktoken
 from .base import Tokenizer
 
 
-class VertexTokenizer(Tokenizer):
+class AzureOpenAITokenizer(Tokenizer):
     """
-    Tokenizer for VertexAI models.
-
-    VertexAI does not offer tokenizers. GPT-4 Tokenizer is used instead.
+    Tokenizer for AzureOpenAI models.
+    Tokenizer can't be inferred from the deployment name
+    of a model. GPT-4 Tokenizer is used instead.
     """
 
     def __init__(self, model_name: str):

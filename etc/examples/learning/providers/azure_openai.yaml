@@ -1,0 +1,47 @@
+# Config for everything related to dataset generation inputs
+input_config:
+    # Dataset metadata
+    domain: tweets
+    language: en
+
+    # Dataset generator parameters
+    quantity: 10
+    random_sample_human: true
+    
+    # HuggingFace dataset params
+    dataset: tweet_eval
+    dataset_text_column: text
+    dataset_params:
+        split: train
+        name: irony
+
+    # Prompt template
+    template: >-
+        Write a tweet response to the following tweet:\n'{text}'\n\nTweet: 
+
+    # Extractor params
+    extractor: auxiliary
+    max_input_tokens: 256
+    
+# Config for model instantiation
+# Requires `AZURE_OPENAI_API_KEY=<key>` environment variable.
+# More info:
+# https://learn.microsoft.com/en-us/azure/ai-services/openai/reference
+# https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/switching-endpoints
+model_config:
+    provider: azure_openai
+    api_version: 2023-12-01-preview
+    azure_endpoint: https://[your-resource].openai.azure.com/
+    # `model_name` must be the deployment name, not the backbone model
+    model_name: [deployment_name]
+    api_type: COMPLETION
+    threads: 8
+    max_retries: 5
+    timeout: 120
+    
+# Decoding args
+generation_config:
+    # Ignore use `max_tokens` to get automatic length estimation
+    # max_tokens: 100
+    temperature: 0.7
+    presence_penalty: 1.0

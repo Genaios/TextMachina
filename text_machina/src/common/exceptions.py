@@ -1,3 +1,6 @@
+from typing import List
+
+
 class TextMachinaError(Exception):
     """
     Base class for TextMachina exceptions.
@@ -32,6 +35,22 @@ class MissingMetricError(TextMachinaError):
             f"'{self.metric}' metric can't be used. Please, install"
             f" the extra exploration packages"
             f" `pip install text-machina[explore]`."
+        )
+        super().__init__(msg)
+
+
+class InvalidInferenceServer(TextMachinaError):
+    """
+    Raised when an inference server type is not valid
+    for the InferenceServerModel.
+    """
+
+    def __init__(self, inference_server: str, allowed: List[str]):
+        self.inference_server = inference_server
+        self.allowed = allowed
+        msg = (
+            f"Inference server `{self.inference_server}` is not allowed."
+            f" Please use one from {', '.join(allowed)}"
         )
         super().__init__(msg)
 
