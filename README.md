@@ -262,8 +262,6 @@ It can be modified by setting `TEXT_MACHINA_CACHE_DIR` to a different path.
 
 - Generating machine-generated code datasets is not well supported yet.
 
-- LLM providers like Amazon or Azure are not implemented yet.
-
 ## 📖 Citation
 ---
 ```
