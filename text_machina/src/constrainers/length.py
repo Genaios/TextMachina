@@ -57,7 +57,8 @@ class LengthConstrainer(Constrainer, ABC):
             return {"maxTokenCount": max_new_tokens}
         elif self.provider == "ai21":
             return {"maxTokens": max_new_tokens}
-
+        elif self.provider == "inference_server":
+            return {"max_tokens": max_new_tokens}
         return {
             "max_new_tokens": max_new_tokens,
             "min_new_tokens": min_new_tokens,

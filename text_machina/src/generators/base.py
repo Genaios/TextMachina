@@ -79,7 +79,6 @@ class DatasetGenerator(ABC):
 
         Args:
             generations (List[str]): the generated texts.
-            *args: additional arguments.
             **kwargs: additional keyword arguments.
 
         Returns:

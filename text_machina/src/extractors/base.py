@@ -18,6 +18,7 @@ class Extractor(ABC):
         self.input_config = input_config
         self.task_type = task_type
         self.workspace: Dict[str, Any] = {}
+        self.args: Dict[str, Any] = {}
 
     @abstractmethod
     def _extract(self, dataset: Dataset) -> Dict[str, List[str]]:

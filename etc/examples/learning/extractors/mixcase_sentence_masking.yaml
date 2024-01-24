@@ -1,0 +1,50 @@
+# Config for everything related to dataset generation inputs
+input_config:
+    # Dataset metadata
+    domain: news
+    language: en
+
+    # Dataset generator parameters
+    quantity: 10
+    random_sample_human: true
+
+    # HuggingFace dataset params
+    dataset: xsum
+    dataset_text_column: document
+    dataset_params:
+        split: test
+
+    # Prompt template
+    template: >-
+        Some sentences of a text has been replaced by gaps marked as "MASK".
+        You have to fill these gaps, writing new sentences to be coherent
+        with the context.
+        Format your output according to the following JSON format:
+        {{"MASK-0": <sentence>, ...}}\n\n
+        # Article with gaps #\n
+        {masked_text}\n\n
+        # JSON Output #\n
+
+    # Extractor params
+    extractor: sentence_masking
+    max_input_tokens: 1024
+    extractor_args:
+        sentence_masking:
+            mask_token: "MASK"
+            percentage_range: [0.3, 0.4]
+
+# Config for model instantiation
+model_config:
+    provider: openai
+    model_name: gpt-4
+    api_type: CHAT
+    threads: 8
+    max_retries: 5
+    timeout: 120
+    
+# Decoding args
+generation_config:
+    # Ignore use `max_tokens` to get automatic length estimation
+    max_tokens: 1024
+    temperature: 0.7
+    presence_penalty: 1.0

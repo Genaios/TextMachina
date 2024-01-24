@@ -1,4 +1,4 @@
 # flake8: noqa
 
 from .exceptions import *
-from .logging import get_logger
+from .logging import color_log, get_logger

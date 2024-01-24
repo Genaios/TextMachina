@@ -16,6 +16,7 @@ MODELS: Mapping[str, str] = {
     "bedrock": "BedrockModel",
     "ai21": "AI21Model",
     "azure_openai": "AzureOpenAIModel",
+    "inference_server": "InferenceServerModel",
 }
 
 

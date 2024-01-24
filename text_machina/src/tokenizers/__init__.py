@@ -19,6 +19,7 @@ TOKENIZERS: Mapping[str, str] = {
     "bedrock": "BedrockTokenizer",
     "ai21": "AI21Tokenizer",
     "azure_openai": "AzureOpenAITokenizer",
+    "inference_server": "InferenceServerTokenizer",
 }
 
 

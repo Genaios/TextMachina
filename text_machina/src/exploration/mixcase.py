@@ -18,7 +18,12 @@ class MixCaseExplorer(Explorer):
     def get_panels(self, example: Dict[str, Any]) -> List[Panel]:
         panels = []
         # Prompt panels
-        for idx, prompt in enumerate(example["prompt"]):
+        prompts = (
+            [example["prompt"]]
+            if not isinstance(example["prompt"], list)
+            else example["prompt"]
+        )
+        for idx, prompt in enumerate(prompts):
             panels.append(
                 Panel(
                     escape(prompt),
