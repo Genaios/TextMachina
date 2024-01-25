@@ -16,6 +16,10 @@ TOKENIZERS: Mapping[str, str] = {
     "hf_local": "HuggingFaceLocalTokenizer",
     "hf_remote": "HuggingFaceRemoteTokenizer",
     "vertex": "VertexTokenizer",
+    "bedrock": "BedrockTokenizer",
+    "ai21": "AI21Tokenizer",
+    "azure_openai": "AzureOpenAITokenizer",
+    "inference_server": "InferenceServerTokenizer",
 }
 
 

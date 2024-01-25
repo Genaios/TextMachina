@@ -10,8 +10,10 @@ from .dummy import Dummy
 from .entity_list import EntityList
 from .noun_list import NounList
 from .sentence_gap import SentenceGap
+from .sentence_masking import SentenceMasking
 from .sentence_prefix import SentencePrefix
 from .word_gap import WordGap
+from .word_masking import WordMasking
 from .word_prefix import WordPrefix
 
 EXTRACTORS: Mapping[str, Type[Extractor]] = {
@@ -21,9 +23,11 @@ EXTRACTORS: Mapping[str, Type[Extractor]] = {
     "entity_list": EntityList,
     "noun_list": NounList,
     "sentence_prefix": SentencePrefix,
-    "word_prefix": WordPrefix,
     "sentence_gap": SentenceGap,
+    "sentence_masking": SentenceMasking,
+    "word_prefix": WordPrefix,
     "word_gap": WordGap,
+    "word_masking": WordMasking,
 }
 
 

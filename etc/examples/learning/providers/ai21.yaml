@@ -1,0 +1,41 @@
+# Config for everything related to dataset generation inputs
+input_config:
+    # Dataset metadata
+    domain: tweets
+    language: en
+
+    # Dataset generator parameters
+    quantity: 10
+    random_sample_human: true
+    
+    # HuggingFace dataset params
+    dataset: tweet_eval
+    dataset_text_column: text
+    dataset_params:
+        split: train
+        name: irony
+
+    # Prompt template
+    template: >-
+        Write a tweet response to the following tweet:\n'{text}'\n\nTweet: 
+
+    # Extractor params
+    extractor: auxiliary
+    max_input_tokens: 256
+    
+# Config for model instantiation
+# Requires `AI21_API_KEY=<key>` env variable.
+model_config:
+    provider: ai21
+    model_name: j2-ultra
+    threads: 8
+    num_retries: 5
+    timeout_sec: 30
+    api_type: CHAT
+    
+# Decoding args
+generation_config:
+    # Ignore use `maxTokens` to get automatic length estimation
+    # maxTokens: 4096
+    temperature: 0
+    topP: 0.9

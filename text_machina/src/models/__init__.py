@@ -13,6 +13,10 @@ MODELS: Mapping[str, str] = {
     "hf_local": "HuggingFaceLocalModel",
     "hf_remote": "HuggingFaceRemoteModel",
     "vertex": "VertexModel",
+    "bedrock": "BedrockModel",
+    "ai21": "AI21Model",
+    "azure_openai": "AzureOpenAIModel",
+    "inference_server": "InferenceServerModel",
 }
 
 

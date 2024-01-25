@@ -21,7 +21,6 @@ class AttributionDatasetGenerator(DatasetGenerator):
 
         Args:
             generations (List[str]): list of generated texts.
-            prompted_dataset (PromptedDataset): dataset with prompts and human texts.
             kwargs: additional keyword arguments.
 
         Returns:

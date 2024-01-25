@@ -15,13 +15,28 @@ input_config:
         split: test
 
     # Prompt template
-    # For mixcase tasks, TextMachina's strategy is to sample
-    # human sentences/word-spans boundaries (one left-side and one
-    # right-side with a gap in between), generate a random number of
-    # sentences/words in between the boundary and then interleave the
-    # generations and the human boundaries.
-    # You have to prepare a prompt template to generate sentences/words 
-    # between a boundary of two sentences/word-spans.
+    # For mixcase tasks, TextMachina's allows to use two strategies:
+
+    # 1) Gap-based: Sample human sentences/word-spans boundaries
+    # (one left-side and one right-side with a gap in between),
+    # generate a random number of sentences/words in between
+    # the boundary and then interleave the generations with 
+    # the human boundaries. In this case, you have to prepare a
+    # prompt template to generate sentences/words between a boundary
+    # of two sentences/word-spans.
+
+    # 2) Mask-based: Mask human sentences/word-spans and let the
+    # LLM to reconstruct the masks. This approach has the advantage
+    # of sending all the context to the LLM to fill the masks, instead
+    # of relying only on a boundary of one preceding and one succeeding
+    # sentence/word-span. However, this task requires to generate a
+    # JSON output and generate all the masks, which is not addressable
+    # by most of the LLMs. In this case, you have to prepare a prompt
+    # template to generate masks given a text. Look the examples in
+    # etc/examples/learning/extractors to figure out how to prompt
+    # LLMs to generate datasets using the mask-based strategy.
+
+    # The following prompt template illustrates the gap-based approach.
     template: >-
         Write {n} sentences to fill the gap marked as "____" between the following 2 sentences.
         Refrain to copy the sentences provided:\n
@@ -29,8 +44,9 @@ input_config:
         Sentences:
 
     # Extractor params
-    # For mixcase tasks, use only `sentence_gap` or `word_gap` extractors.
-    # Read the extractors/sentence_gap.py and extractors/word_gap.py to
+    # For mixcase tasks, you can use `sentence_gap`, `sentence_masking`
+    # `word_gap` or `word_masking` extractors.
+    # Read the extractors' code within the extractors folder to
     # figure the arguments you can use for these extractors.
     extractor: sentence_gap
     max_input_tokens: 512

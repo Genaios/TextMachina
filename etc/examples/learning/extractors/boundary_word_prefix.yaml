@@ -1,0 +1,46 @@
+# Config for everything related to dataset generation inputs
+input_config:
+    # Dataset metadata
+    domain: news
+    language: en
+
+    # Dataset generator parameters
+    quantity: 10
+    random_sample_human: false
+
+    # HuggingFace dataset params
+    dataset: xsum
+    dataset_text_column: document
+    dataset_params:
+        split: test
+
+    # Prompt template
+    template: >-
+        Complete a news article that starts by these words: '{words}'.
+        Refrain from copying the provided text.
+        Instead, write new ones coherent with the prefix.\n\n
+        Text: 
+
+    # Extractor params
+    # Without specifying the `k` (number of sentences) argument,
+    # the `word_prefix` extractor will randomly sample the word-length
+    # of the prefixes.
+    extractor: word_prefix
+    max_input_tokens: 256
+    
+# Config for model instantiation
+# Requires `OPENAI_API_KEY=<key>` environment variable.
+model_config:
+    provider: openai
+    model_name: gpt-3.5-turbo-instruct
+    api_type: COMPLETION
+    threads: 8
+    max_retries: 5
+    timeout: 120
+    
+# Decoding args
+generation_config:
+    # Ignore use `max_tokens` to get automatic length estimation
+    # max_tokens: 100
+    temperature: 0.7
+    presence_penalty: 1.0
