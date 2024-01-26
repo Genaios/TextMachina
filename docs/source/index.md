@@ -8,13 +8,13 @@ quicktour
 supported_tasks
 common_use_cases
 caching
-api
+limitations
 ```
 
 ```{toctree}
 :maxdepth: 2
 :hidden:
-:caption: Modules
+:caption: API
 
 api
 ```
