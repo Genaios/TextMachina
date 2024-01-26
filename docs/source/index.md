@@ -16,7 +16,19 @@ limitations
 :hidden:
 :caption: Modules
 
-modules/extractors.rst
+modules/cli
+modules/config
+modules/types
+modules/data
+modules/common
+modules/exploration
+modules/extractors
+modules/generators
+modules/models
+modules/tokenizers
+modules/constrainers
+modules/metrics
+modules/postprocessing
 ```
 
 ```{toctree}
