@@ -20,7 +20,6 @@ TEXT_GENERATION_DEPS = [
     "pycountry>=22.3.5",
     "ftfy>=6.1.3",
     "fasttext-wheel",
-    "myst-parser>=1.0,<2.1",
 ]
 
 EXPLORE_DEPS = [
@@ -46,6 +45,19 @@ DEV_DEPS = [
     "isort",
     "autoflake",
     "pre-commit",
+    "pytest-sphinx",
+    "pytest-cov",
+    "ruff",
+    "Sphinx>=4.3.0,<7.1.0",
+    "furo==2023.7.26",
+    "myst-parser>=1.0,<2.1",
+    "sphinx-copybutton==0.5.2",
+    "sphinx-autobuild==2021.3.14",
+    "sphinx-autodoc-typehints==1.23.3",
+    "packaging",
+    "setuptools",
+    "build",
+    "wheel",
 ]
 
 EXTRAS_REQUIRES: Dict[str, List[str]] = {
