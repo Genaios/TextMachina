@@ -13,10 +13,8 @@ overview
 :hidden:
 :caption: Development
 
-CHANGELOG
-CONTRIBUTING
-License <https://raw.githubusercontent.com/allenai/python-package-template/main/LICENSE>
-GitHub Repository <https://github.com/allenai/python-package-template>
+License <https://github.com/Genaios/TextMachina/blob/main/LICENSE>
+GitHub Repository <https://github.com/Genaios/TextMachina>
 ```
 
 ## Indices and tables

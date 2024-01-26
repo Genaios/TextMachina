@@ -1,18 +1,3 @@
-<!---
-Copyright 2023 Genaios
-
-Licensed under the CC BY-NC-ND 4.0 License
-
-You must give appropriate credit, provide a link to the license, and indicate if changes were made.
-You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
-You may not use the material for commercial purposes.
-If you remix, transform, or build upon the material, you may not distribute the modified material.
-You are free to copy and redistribute this material as it is in any medium or format
-You may obtain a copy of the License at
-
-    https://creativecommons.org/licenses/by-nc-nd/4.0/
--->
-
 Overview
 ========
 
@@ -75,7 +60,7 @@ The following diagram depicts the ![icon](https://github.com/Genaios/TextMachina
 </p>
 
 ## 🔧 Installation
----
+========
 
 You can install all the dependencies with pip:
 
@@ -102,7 +87,7 @@ pip install -e .[dev]
 ```
 
 ## 👀 Quick Tour
----
+========
 
 Once installed, you are ready to use ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true) for building MGT datasets either using the [CLI](text_machina/src/cli.py) or programmatically.
 
@@ -182,7 +167,7 @@ dataset = generator.generate()
 ```
 
 ## 🛠️ Supported tasks
----
+========
 ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true) can generate datasets for MGT detection, attribution, boundary detection, and mixcase detection:
 
 <p align="center">
@@ -233,7 +218,7 @@ dataset = generator.generate()
 However, the users can build datasets for other tasks not included in ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true) just by leveraging the provided task types. For instance, datasets for mixcase classification can be built from datasets for mixcase tagging, or datasets for mixcase attribution can be built using the generation model name as label.
 
 ## 🔄 Common Use Cases
----
+========
 There is a set of common use cases with ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true). Here's how to carry them out using the *explore* and *generate* endpoints.
 
 | Use case                                                                    | Command                                                                                                                       |
@@ -254,7 +239,7 @@ It can be modified by setting `TEXT_MACHINA_CACHE_DIR` to a different path.
 
 
 ## ⚠️ Notes and Limitations
----
+========
 
 - Although you can use any kind of extractor to build boundary detection datasets, it is highly recommended to use the *sentence_prefix* or
 *word_prefix* extractors with a random number of sentences/words to avoid biases that lead boundary detection models to just count sentences or words.
@@ -266,7 +251,7 @@ It can be modified by setting `TEXT_MACHINA_CACHE_DIR` to a different path.
 - Generating machine-generated code datasets is not well supported yet.
 
 ## 📖 Citation
----
+========
 ```
 @misc{sarvazyan2024textmachina,
       title={TextMachina: Seamless Generation of Machine-Generated Text Datasets}, 
@@ -278,12 +263,12 @@ It can be modified by setting `TEXT_MACHINA_CACHE_DIR` to a different path.
 }
 ```
 ## 🤝 Contribute
----
+========
 
 Feel free to contribute to ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true) by raising an issue.
 
 Please install and use the [dev-tools](dev-tools) for correctly formatting the code when contributing to this repo.
 
 ## 🏭 Commercial Purposes
----
+========
 Please, contact stuart.winter-tear@genaios.ai and marc.franco@genaios.ai if you are interested in using TextMachina for commercial purposes.

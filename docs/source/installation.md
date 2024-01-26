@@ -14,7 +14,7 @@ You can install all the dependencies with pip:
 pip install text_machina[all]
 ```
 
-or just with specific dependencies for an specific LLM provider or development dependencies (see [setup.py](setup.py)):
+or just with specific dependencies for an specific LLM provider or development dependencies (see :doc: setup.py)):
 
 ```bash
 pip install text_machina[anthropic,dev]
