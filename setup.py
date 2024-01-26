@@ -20,6 +20,7 @@ TEXT_GENERATION_DEPS = [
     "pycountry>=22.3.5",
     "ftfy>=6.1.3",
     "fasttext-wheel",
+    "myst-parser>=1.0,<2.1",
 ]
 
 EXPLORE_DEPS = [
