@@ -1,4 +1,4 @@
-# ⚠️ Limitations
+⚠️ Limitations
 ========
 
 - Although you can use any kind of extractor to build boundary detection datasets, it is highly recommended to use the *sentence_prefix* or

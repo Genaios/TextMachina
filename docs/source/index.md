@@ -97,6 +97,7 @@ Please, cite ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typ
       archivePrefix={arXiv},
       primaryClass={cs.CL}
 }
+```
 
 ## 🏭 Commercial Purposes
 Contact stuart.winter-tear@genaios.ai and marc.franco@genaios.ai if you are interested in using TextMachina for commercial purposes.

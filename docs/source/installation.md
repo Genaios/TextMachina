@@ -1,12 +1,11 @@
-Installation
+🔧 Installation
 ============
 
 **text-machina** supports Python >= 3.8.
 
 ## Installing with `pip`
 
-**text-machina** is available [on PyPI](https://pypi.org/project/text-machina/). Just run
-
+**text-machina** is available [on PyPI](https://pypi.org/project/text-machina/).
 
 You can install all the dependencies with pip:
 
