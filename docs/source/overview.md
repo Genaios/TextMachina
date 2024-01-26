@@ -42,13 +42,13 @@ Overview
 
 ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true) TextMachina provides a user-friendly pipeline that abstracts away the inherent intricacies of building MGT datasets:
 
-- 🦜 **LLM integrations**: easily integrates any LLM provider. Currently, ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true) supports LLMs from Anthropic, Cohere, OpenAI, Google Vertex AI, Amazon Bedrock, AI21, Azure OpenAI, models deployed on VLLM and TRT inference servers, and any model from HuggingFace deployed either locally or remotely through Inference API or Inference Endpoints. See [models](text_machina/src/models/) to implement your own LLM provider.
+- 🦜 **LLM integrations**: easily integrates any LLM provider. Currently, ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true) supports LLMs from Anthropic, Cohere, OpenAI, Google Vertex AI, Amazon Bedrock, AI21, Azure OpenAI, models deployed on VLLM and TRT inference servers, and any model from HuggingFace deployed either locally or remotely through Inference API or Inference Endpoints. See :doc: text_machina/src/models/ to implement your own LLM provider.
 
-- ✍️ **Prompt templating**: just write your prompt template with placeholders and let ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true) extractors to fill the template and prepare a prompt for an LLM. See [extractors](text_machina/src/extractors) to implement your own extractors and learn more about the placeholders for each extractor.
+- ✍️ **Prompt templating**: just write your prompt template with placeholders and let ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true) extractors to fill the template and prepare a prompt for an LLM. See :doc: text_machina/src/extractors to implement your own extractors and learn more about the placeholders for each extractor.
 - 🔒 **Constrained decoding**: automatically infer LLM decoding hyper-parameters from the human texts to improve the quality and reduce the biases of your MGT datasets. See [constrainers](text_machina/src/constrainers) to implement your own constrainers.
-- 🛠️ **Post-processing**: post-process functions aimed to improve the quality of any MGT dataset and prevent common biases and artifacts. See [postprocessing](text_machina/src/postprocessing.py) to add new postprocess functions.
+- 🛠️ **Post-processing**: post-process functions aimed to improve the quality of any MGT dataset and prevent common biases and artifacts. See :doc: text_machina/src/postprocessing.py to add new postprocess functions.
 - 🌈 **Bias mitigation**: ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true) is built with bias prevention in mind and helps you across all the pipeline to prevent introducing spurious correlations in your datasets.
-- 📊 **Dataset exploration**: explore the generated datasets and quantify its quality with a set of metrics. See [metrics](text_machina/metrics) and [interactive](text_machina/src/interactive.py) to implement your own metrics and visualizations.
+- 📊 **Dataset exploration**: explore the generated datasets and quantify its quality with a set of metrics. See :doc: text_machina/metrics and :doc: text_machina/src/interactive.py to implement your own metrics and visualizations.
 
 The following diagram depicts the ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true)'s pipeline.
 <p align="center">
@@ -59,40 +59,13 @@ The following diagram depicts the ![icon](https://github.com/Genaios/TextMachina
   <br/>
 </p>
 
-## 🔧 Installation
-========
-
-You can install all the dependencies with pip:
-
-```
-pip install text_machina[all]
-```
-
-or just with specific dependencies for an specific LLM provider or development dependencies (see [setup.py](setup.py)):
-
-```
-pip install text_machina[anthropic,dev]
-```
-
-You can also install directly from source:
-
-```
-pip install .[all]
-```
-
-If you're planning to modify the code for specific use cases, you can install ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true) in development mode:
-
-```
-pip install -e .[dev]
-```
-
 ## 👀 Quick Tour
 ========
 
 Once installed, you are ready to use ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true) for building MGT datasets either using the [CLI](text_machina/src/cli.py) or programmatically.
 
 ### 📟 Using the CLI
-The first step is to define a YAML configuration file or a directory tree containing YAML files. Read the [examples/learning](etc/examples/learning) files to learn how to define configuration using different providers and extractors for different tasks. Take a look to [examples/use_cases](etc/examples/use_cases) to see configurations for specific use cases.
+The first step is to define a YAML configuration file or a directory tree containing YAML files. Read the :doc: etc/examples/learning files to learn how to define configuration using different providers and extractors for different tasks. Take a look to :doc: etc/examples/use_cases to see configurations for specific use cases.
 
 Then, we can call the *explore* and *generate* endpoints of ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true)'s CLI. The *explore* endpoint allows to inspect a small generated dataset using an specific configuration through an interactive interface. For instance, let's suppose we want to check how an MGT detection dataset generated using *[XSum](https://huggingface.co/datasets/EdinburghNLP/xsum)* news articles and *gpt-3.5-turbo-instruct* looks like, and compute some metrics:
 
@@ -267,7 +240,7 @@ It can be modified by setting `TEXT_MACHINA_CACHE_DIR` to a different path.
 
 Feel free to contribute to ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true) by raising an issue.
 
-Please install and use the [dev-tools](dev-tools) for correctly formatting the code when contributing to this repo.
+Please install and use the :doc: dev-tools for correctly formatting the code when contributing to this repo.
 
 ## 🏭 Commercial Purposes
 ========
