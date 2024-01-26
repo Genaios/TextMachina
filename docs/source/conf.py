@@ -37,7 +37,6 @@ release = VERSION
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
-    "myst_parser",
     "sphinx.ext.intersphinx",
     "sphinx.ext.viewcode",
     "sphinx.ext.doctest",
@@ -45,10 +44,6 @@ extensions = [
     "sphinx_autodoc_typehints",
 ]
 
-# Tell myst-parser to assign header anchors for h1-h3.
-myst_heading_anchors = 3
-
-suppress_warnings = ["myst.header"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
