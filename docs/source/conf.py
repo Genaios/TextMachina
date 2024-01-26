@@ -22,7 +22,7 @@ from text_machina import VERSION, VERSION_SHORT  # noqa: E402
 
 # -- Project information -----------------------------------------------------
 
-project = "text-machina"
+project = "TextMachina"
 copyright = f"{datetime.today().year}, Genaios"
 author = "Genaios"
 version = VERSION_SHORT
@@ -83,7 +83,7 @@ typehints_defaults = "comma"
 #
 html_theme = "furo"
 
-html_title = f"text-machina v{VERSION}"
+html_title = f"TextMachina v{VERSION}"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
