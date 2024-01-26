@@ -14,9 +14,9 @@ limitations
 ```{toctree}
 :maxdepth: 2
 :hidden:
-:caption: API
+:caption: Modules
 
-api
+modules/extractors.rst
 ```
 
 ```{toctree}
