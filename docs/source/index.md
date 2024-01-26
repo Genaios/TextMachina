@@ -51,8 +51,8 @@ GitHub Repository <https://github.com/Genaios/TextMachina>
     <a href="LICENSE">
         <img alt="license" src="https://img.shields.io/badge/license-CC_BY_NC_ND_4.0-green">
     </a>
-    <a href="">
-        <img alt="Documentation" src="https://img.shields.io/badge/Documentation-pending-pink">
+    <a href="https://textmachina.readthedocs.io/en/latest/">
+        <img alt="Documentation" src="https://img.shields.io/badge/Documentation-Readthedocs-green">
     </a>
     <a href="CODE_OF_CONDUCT.md">
         <img alt="Contributor Covenant" src="https://img.shields.io/badge/Contributor%20Covenant-v2.0-green">
