@@ -53,7 +53,7 @@ class LabeledSpan(BaseModel):
     label: str
 
     @model_validator(mode="after")
-    def check_passwords_match(self) -> "LabeledSpan":
+    def check_valid_positions(self) -> "LabeledSpan":
         if not (self.start < self.end):
             raise ValueError(
                 "`start` must be lower than `end` in a LabeledSpan"
