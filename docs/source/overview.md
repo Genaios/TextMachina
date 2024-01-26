@@ -45,7 +45,7 @@ Overview
 - 🦜 **LLM integrations**: easily integrates any LLM provider. Currently, ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true) supports LLMs from Anthropic, Cohere, OpenAI, Google Vertex AI, Amazon Bedrock, AI21, Azure OpenAI, models deployed on VLLM and TRT inference servers, and any model from HuggingFace deployed either locally or remotely through Inference API or Inference Endpoints. See :doc: text_machina/src/models/ to implement your own LLM provider.
 
 - ✍️ **Prompt templating**: just write your prompt template with placeholders and let ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true) extractors to fill the template and prepare a prompt for an LLM. See :doc: text_machina/src/extractors to implement your own extractors and learn more about the placeholders for each extractor.
-- 🔒 **Constrained decoding**: automatically infer LLM decoding hyper-parameters from the human texts to improve the quality and reduce the biases of your MGT datasets. See [constrainers](text_machina/src/constrainers) to implement your own constrainers.
+- 🔒 **Constrained decoding**: automatically infer LLM decoding hyper-parameters from the human texts to improve the quality and reduce the biases of your MGT datasets. See :doc: text_machina/src/constrainers to implement your own constrainers.
 - 🛠️ **Post-processing**: post-process functions aimed to improve the quality of any MGT dataset and prevent common biases and artifacts. See :doc: text_machina/src/postprocessing.py to add new postprocess functions.
 - 🌈 **Bias mitigation**: ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true) is built with bias prevention in mind and helps you across all the pipeline to prevent introducing spurious correlations in your datasets.
 - 📊 **Dataset exploration**: explore the generated datasets and quantify its quality with a set of metrics. See :doc: text_machina/metrics and :doc: text_machina/src/interactive.py to implement your own metrics and visualizations.
@@ -62,7 +62,7 @@ The following diagram depicts the ![icon](https://github.com/Genaios/TextMachina
 ## 👀 Quick Tour
 ========
 
-Once installed, you are ready to use ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true) for building MGT datasets either using the [CLI](text_machina/src/cli.py) or programmatically.
+Once installed, you are ready to use ![icon](https://github.com/Genaios/TextMachina/blob/main/assets/typewriter.png?raw=true) for building MGT datasets either using the :doc: text_machina/src/cli.py or programmatically.
 
 ### 📟 Using the CLI
 The first step is to define a YAML configuration file or a directory tree containing YAML files. Read the :doc: etc/examples/learning files to learn how to define configuration using different providers and extractors for different tasks. Take a look to :doc: etc/examples/use_cases to see configurations for specific use cases.
