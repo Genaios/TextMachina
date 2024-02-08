@@ -12,6 +12,7 @@ from .noun_list import NounList
 from .sentence_gap import SentenceGap
 from .sentence_masking import SentenceMasking
 from .sentence_prefix import SentencePrefix
+from .sentence_rewriting import SentenceRewriting
 from .word_gap import WordGap
 from .word_masking import WordMasking
 from .word_prefix import WordPrefix
@@ -25,6 +26,7 @@ EXTRACTORS: Mapping[str, Type[Extractor]] = {
     "sentence_prefix": SentencePrefix,
     "sentence_gap": SentenceGap,
     "sentence_masking": SentenceMasking,
+    "sentence_rewriting": SentenceRewriting,
     "word_prefix": WordPrefix,
     "word_gap": WordGap,
     "word_masking": WordMasking,

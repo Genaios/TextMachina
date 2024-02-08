@@ -8,7 +8,13 @@ from datasets import Dataset, concatenate_datasets
 from ..common import color_log, get_logger
 from ..common.exceptions import DatasetGenerationError
 from ..config import Config
-from ..extractors import Extractor, SentenceGap, WordGap
+from ..extractors import (
+    Extractor,
+    SentenceGap,
+    SentenceMasking,
+    WordGap,
+    WordMasking,
+)
 from ..models.types import GENERATION_ERROR
 from ..types import DetectionLabels, LabeledSpan, Placeholders
 from .base import DatasetGenerator
@@ -27,8 +33,13 @@ class MixCaseDatasetGenerator(DatasetGenerator):
     def _pack(self, generations: List[str], **kwargs) -> Dataset:
         if isinstance(self.prompter.extractor, (SentenceGap, WordGap)):
             packer: Type[MixCasePacker] = MixCaseGapPacker
-        else:
+        elif isinstance(
+            self.prompter.extractor, (SentenceMasking, WordMasking)
+        ):
             packer = MixCaseMaskPacker
+        else:
+            packer = MixCaseRewritingPacker
+
         return packer(self.config, self.prompter.extractor)._pack(
             generations, **kwargs
         )
@@ -76,6 +87,195 @@ class MixCasePacker(ABC):
             Dataset: a dataset including all the texts.
         """
         ...
+
+
+class MixCaseRewritingPacker(MixCasePacker):
+    """
+    Packer for mixcase task type when using rewriting-based extractors.
+    """
+
+    def __init__(self, config: Config, extractor: Extractor) -> None:
+        super().__init__(config=config, extractor=extractor)
+
+    def _build_samples(
+        self,
+        generations: List[str],
+    ) -> Tuple[List[str], List[List[Dict]]]:
+        """
+        Interleaves generated and human spans to build mixcase samples.
+        The `start` and `end` of the labels follow the Python [`start`, `end`)
+        convention, i.e., including the `start` element and excluding `end`.
+        For instance, given the text: "I like Apolo. I don't like Athenea",
+        being the first sentence human-written and the second one generated,
+        the labels will be:
+        [
+            {"start": 0, "end": 14, "label": "human"},
+            {"start": 14, "end": 34, "label": "generated"},
+        ]
+
+        Args:
+            generations (List[str]): list of generations
+
+        Returns:
+            Tuple[List[str], List[List[Dict]]]: the interleaved texts and
+            the list of labels of each text.
+        """
+        texts, labels = [], []
+
+        prev_sample = 0
+        for sentences, positions in zip(
+            self.extractor.workspace["human_spans"],
+            self.extractor.workspace["positions"],
+        ):
+            rewrittens = generations[prev_sample : prev_sample + len(positions)]
+            positions = sorted(positions)
+            sample_labels: List[Dict] = []
+
+            # Replace rewritten sentences
+            sentences_with_rewrites = sentences[:]
+            for idx, position in enumerate(positions):
+                sentences_with_rewrites[position] = rewrittens[idx]
+            sample_text = "".join(sentences_with_rewrites)
+
+            # Mark generated spans
+            generated_labels = []
+            for idx, position in enumerate(positions):
+                start_pos = len("".join(sentences_with_rewrites[:position]))
+                end_pos = len("".join(sentences_with_rewrites[: position + 1]))
+                generated_labels.append(
+                    LabeledSpan(
+                        start=start_pos,
+                        end=end_pos,
+                        label=DetectionLabels.GENERATED.value,
+                    ).model_dump()
+                )
+
+            # Mark human spans
+            human_labels = []
+            prev_generated_position = 0
+            for idx in range(len(generated_labels)):
+                generated_label = generated_labels[idx]
+                print(prev_generated_position, generated_label["start"])
+                if prev_generated_position < generated_label["start"]:
+                    human_labels.append(
+                        LabeledSpan(
+                            start=prev_generated_position,
+                            end=generated_label["start"],
+                            label=DetectionLabels.HUMAN.value,
+                        ).model_dump()
+                    )
+                prev_generated_position = generated_label["end"]
+
+            # Add human label if the end of the text has not been
+            # reached by the last generated span
+            last_generated_position = generated_labels[-1]["end"]
+            if last_generated_position < len(sample_text):
+                human_labels.append(
+                    LabeledSpan(
+                        start=last_generated_position,
+                        end=len(sample_text),
+                        label=DetectionLabels.HUMAN.value,
+                    ).model_dump()
+                )
+            # Merge generated and human spans
+            # Join generated labels with human labels and merge overlappings.
+            merged_labels = sorted(
+                human_labels + generated_labels, key=lambda span: span["start"]
+            )
+            sample_labels = []
+            while len(merged_labels):
+                current_span = merged_labels.pop(0)
+                current_label = current_span["label"]
+                spans_with_same_label = []
+                while (
+                    len(merged_labels)
+                    and merged_labels[0]["label"] == current_label
+                ):
+                    spans_with_same_label.append(merged_labels.pop(0))
+
+                if not spans_with_same_label:
+                    sample_labels.append(current_span)
+                else:
+                    sample_labels.append(
+                        LabeledSpan(
+                            start=current_span["start"],
+                            end=spans_with_same_label[-1]["end"],
+                            label=current_label,
+                        ).model_dump()
+                    )
+
+            prev_sample += len(positions)
+            texts.append("".join(sentences_with_rewrites))
+            labels.append(sample_labels)
+        return texts, labels
+
+    def _pack(self, generations: List[str], **kwargs) -> Dataset:
+        """
+        Combines and labels the generated and human texts
+        when using rewriting-based extractors (`sentence_rewriting`)
+
+        Args:
+            generations (List[str]): list of generated texts.
+            kwargs: additional keyword arguments.
+
+        Returns:
+            Dataset: a dataset including all the texts.
+        """
+        prompted_dataset = kwargs.get("prompted_dataset", None)
+        if prompted_dataset is None:
+            raise DatasetGenerationError(f"prompted_dataset not found: {self}")
+
+        model_name = self.config.model.model_name
+        domain = self.config.input.domain
+        extractor_name = self.config.input.extractor
+        texts, labels = self._build_samples(generations)
+
+        prev_sample = 0
+        mixed_samples = []
+        for idx, (text, sample_labels) in enumerate(zip(texts, labels)):
+            n_positions = len(self.extractor.workspace["positions"][idx])
+            prompt = prompted_dataset.prompted_texts[
+                prev_sample : prev_sample + n_positions
+            ] or [Placeholders.NO_PROMPT.value]
+
+            mixed_samples.append(
+                {
+                    "prompt": prompt,
+                    "text": text,
+                    "label": sample_labels,
+                    "model": model_name,
+                    "domain": domain,
+                    "extractor": extractor_name,
+                }
+            )
+            prev_sample += n_positions
+
+        mixed_dataset = Dataset.from_list(mixed_samples)
+
+        human_dataset = Dataset.from_list(
+            [
+                {
+                    "prompt": [Placeholders.NO_PROMPT.value],
+                    "text": text,
+                    "label": [
+                        LabeledSpan(
+                            start=0,
+                            end=len(text),
+                            label=DetectionLabels.HUMAN.value,
+                        ).model_dump()
+                    ],
+                    "model": DetectionLabels.HUMAN.value,
+                    "domain": domain,
+                    "extractor": Placeholders.NO_EXTRACTOR.value,
+                }
+                for text in prompted_dataset.human_texts
+            ]
+        )
+
+        dataset = concatenate_datasets([human_dataset, mixed_dataset])
+        dataset = dataset.shuffle()
+
+        return dataset
 
 
 class MixCaseMaskPacker(MixCasePacker):
