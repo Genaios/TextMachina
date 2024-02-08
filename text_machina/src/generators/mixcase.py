@@ -155,7 +155,6 @@ class MixCaseRewritingPacker(MixCasePacker):
             prev_generated_position = 0
             for idx in range(len(generated_labels)):
                 generated_label = generated_labels[idx]
-                print(prev_generated_position, generated_label["start"])
                 if prev_generated_position < generated_label["start"]:
                     human_labels.append(
                         LabeledSpan(
@@ -177,7 +176,7 @@ class MixCaseRewritingPacker(MixCasePacker):
                         label=DetectionLabels.HUMAN.value,
                     ).model_dump()
                 )
-            # Merge generated and human spans
+
             # Join generated labels with human labels and merge overlappings.
             merged_labels = sorted(
                 human_labels + generated_labels, key=lambda span: span["start"]

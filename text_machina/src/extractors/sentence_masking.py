@@ -1,10 +1,11 @@
 from math import ceil
 from random import choice, sample, uniform
-from typing import Dict, List
+from typing import Any, Dict, List
 
 from datasets import Dataset
 
 from ..common import color_log, get_logger
+from ..common.exceptions import ExtractorInvalidArgs
 from ..config import InputConfig
 from ..types import TaskType
 from .base import Extractor
@@ -32,9 +33,11 @@ class SentenceMasking(Extractor):
     """
 
     def __init__(self, input_config: InputConfig, task_type: TaskType):
-        super().__init__(input_config, task_type)
-        self.args = self.input_config.extractor_args.get("sentence_masking", {})
-        self.workspace = {"masked_texts": []}
+        args: Dict[str, Any] = input_config.extractor_args.get(
+            "sentence_masking", {}
+        )
+        workspace: Dict[str, Any] = {"masked_texts": []}
+        super().__init__(input_config, task_type, workspace, args)
 
         _logger.warn(
             color_log(
@@ -46,6 +49,14 @@ class SentenceMasking(Extractor):
                 "bold_yellow",
             )
         )
+
+    def check_valid_args(self):
+        mandatory_args = ["mask_token", "percentage_range"]
+        for mandatory_arg in mandatory_args:
+            if mandatory_arg not in self.args:
+                raise ExtractorInvalidArgs(
+                    self.__class__.__name__, mandatory_args
+                )
 
     def prepare_human(self, human_texts: List[str]) -> List[str]:
         return human_texts

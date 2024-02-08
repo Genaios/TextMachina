@@ -195,3 +195,20 @@ class ExtractorEmptyColumns(TextMachinaError):
         self.field = field
         msg = f"The extractor {extractor} returned empty '{field}'."
         super().__init__(msg)
+
+
+class ExtractorInvalidArgs(TextMachinaError):
+    """
+    Raised when mandatory arguments for an
+    extractor are invalid or not provided.
+    """
+
+    def __init__(self, extractor: str, extractor_args: List[str]):
+        self.extractor = extractor
+        self.extractor_args = extractor_args
+        msg = (
+            f"When using the extractor {extractor}, you must ensure that"
+            f" the following arguments: {', '.join(self.extractor_args)}"
+            " are valid."
+        )
+        super().__init__(msg)

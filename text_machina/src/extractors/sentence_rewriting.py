@@ -1,9 +1,10 @@
 from math import ceil
 from random import randint, shuffle, uniform
-from typing import Dict, List
+from typing import Any, Dict, List
 
 from datasets import Dataset
 
+from ..common.exceptions import ExtractorInvalidArgs
 from ..config import InputConfig
 from ..types import TaskType
 from .base import Extractor
@@ -29,11 +30,19 @@ class SentenceRewriting(Extractor):
     """
 
     def __init__(self, input_config: InputConfig, task_type: TaskType):
-        super().__init__(input_config, task_type)
-        self.args = self.input_config.extractor_args.get(
+        args: Dict[str, Any] = input_config.extractor_args.get(
             "sentence_rewriting", {}
         )
-        self.workspace = {"positions": [], "human_spans": []}
+        workspace: Dict[str, Any] = {"positions": [], "human_spans": []}
+        super().__init__(input_config, task_type, workspace, args)
+
+    def check_valid_args(self):
+        mandatory_args = ["percentage_range"]
+        for mandatory_arg in mandatory_args:
+            if mandatory_arg not in self.args:
+                raise ExtractorInvalidArgs(
+                    self.__class__.__name__, mandatory_args
+                )
 
     def prepare_human(self, human_texts: List[str]) -> List[str]:
         return [
