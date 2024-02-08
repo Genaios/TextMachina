@@ -1,5 +1,5 @@
 from math import ceil
-from random import randint, shuffle, uniform
+from random import randint, sample, uniform
 from typing import Any, Dict, List
 
 from datasets import Dataset
@@ -58,15 +58,16 @@ class SentenceRewriting(Extractor):
         sentences_to_rewrite = []
         for text in texts:
             sentences = list([sent.text_with_ws for sent in text.sents])
+            # Skip the sample if there are no sentences.
+            if len(sentences) == 0:
+                continue
             self.workspace["human_spans"].append(sentences)
             n_sentences_to_select = randint(
                 1,
                 ceil(uniform(*self.args["percentage_range"]) * len(sentences)),
             )
-            sampled_positions = [_ for _ in range(len(sentences))]
-            shuffle(sampled_positions)
-            sampled_positions = sorted(
-                sampled_positions[:n_sentences_to_select]
+            sampled_positions = sample(
+                [_ for _ in range(len(sentences))], n_sentences_to_select
             )
             self.workspace["positions"].append(sampled_positions)
             for position in sampled_positions:
