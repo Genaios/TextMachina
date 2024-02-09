@@ -66,8 +66,8 @@ class SentenceRewriting(Extractor):
                 1,
                 ceil(uniform(*self.args["percentage_range"]) * len(sentences)),
             )
-            sampled_positions = sample(
-                [_ for _ in range(len(sentences))], n_sentences_to_select
+            sampled_positions = sorted(
+                sample(list(range(len(sentences))), n_sentences_to_select)
             )
             self.workspace["positions"].append(sampled_positions)
             for position in sampled_positions:
