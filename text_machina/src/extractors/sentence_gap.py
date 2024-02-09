@@ -1,9 +1,10 @@
 from math import ceil
 from random import randint
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Tuple
 
 from datasets import Dataset
 
+from ..common.exceptions import ExtractorInvalidArgs
 from ..config import InputConfig
 from ..types import TaskType
 from .base import Extractor
@@ -35,13 +36,27 @@ class SentenceGap(Extractor):
     """
 
     def __init__(self, input_config: InputConfig, task_type: TaskType):
-        super().__init__(input_config, task_type)
-        self.args = self.input_config.extractor_args.get("sentence_gap", {})
-        self.workspace = {
+        args: Dict[str, Any] = input_config.extractor_args.get(
+            "sentence_gap", {}
+        )
+        workspace: Dict[str, Any] = {
             "positions": [],
             "human_spans": [],
             "num_boundaries": [],
         }
+        super().__init__(input_config, task_type, workspace, args)
+
+    def check_valid_args(self):
+        mandatory_args = [
+            "gap_token",
+            "max_percentage_boundaries",
+            "max_sentence_span",
+        ]
+        for mandatory_arg in mandatory_args:
+            if mandatory_arg not in self.args:
+                raise ExtractorInvalidArgs(
+                    self.__class__.__name__, mandatory_args
+                )
 
     def prepare_human(self, human_texts: List[str]) -> List[str]:
         return [

@@ -53,7 +53,6 @@ class PromptedDatasetBuilder:
         # truncate the prompt inputs and format the prompts
         prompt_inputs = self.truncate_inputs(prompt_inputs)
         inputs = format_prompt(self.prompt.template, prompt_inputs)
-
         return PromptedDataset(prompted_texts=inputs, human_texts=human_texts)
 
     def sampling(self, dataset: Dataset) -> Tuple[List[str], Dataset]:

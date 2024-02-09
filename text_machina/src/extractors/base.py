@@ -14,11 +14,28 @@ class Extractor(ABC):
     Base class for an extractor.
     """
 
-    def __init__(self, input_config: InputConfig, task_type: TaskType):
+    def __init__(
+        self,
+        input_config: InputConfig,
+        task_type: TaskType,
+        workspace: Dict[str, Any] = {},
+        args: Dict[str, Any] = {},
+    ):
         self.input_config = input_config
         self.task_type = task_type
-        self.workspace: Dict[str, Any] = {}
-        self.args: Dict[str, Any] = {}
+        self.workspace: Dict[str, Any] = workspace
+        self.args: Dict[str, Any] = args
+        self.check_valid_args()
+
+    def check_valid_args(self) -> None:
+        """
+        Checks if the arguments passed to the extractor are valid.
+
+        Raises:
+            ExtractorInvalidArgs: if the arguments are invalid.
+
+        """
+        ...
 
     @abstractmethod
     def _extract(self, dataset: Dataset) -> Dict[str, List[str]]:
