@@ -3,7 +3,7 @@ from typing import List
 import spacy
 from tqdm import tqdm
 
-from ..common import InvalidSpacyModel, get_logger
+from ..common import get_logger
 from .types import SPACY_MODEL_MAPPING
 
 _logger = get_logger(__name__)
@@ -40,9 +40,7 @@ def get_spacy_model(language: str) -> spacy.lang:
     Returns:
         spacy.lang: a Spacy model.
     """
-    spacy_model = SPACY_MODEL_MAPPING.get(language, None)
-    if spacy_model is None:
-        raise InvalidSpacyModel(language)
+    spacy_model = SPACY_MODEL_MAPPING.get(language, "multilingual")
 
     try:
         nlp = spacy.load(spacy_model)
