@@ -1,7 +1,6 @@
-import os
 from typing import List
 
-import ai21
+from ai21_tokenizer import Tokenizer as AITokenizer
 
 from .base import Tokenizer
 
@@ -15,12 +14,10 @@ class AI21Tokenizer(Tokenizer):
 
     def __init__(self, model_name: str):
         super().__init__(model_name)
+        self.tokenizer = AITokenizer.get_tokenizer()
 
     def encode(self, text: str) -> List[int]:
-        tokenized = ai21.Tokenization.execute(
-            api_key=os.environ["AI21_API_KEY"], model=self.model_name, text=text
-        )
-        return [token["token"] for token in tokenized["tokens"]]
+        return self.tokenizer.encode(text)
 
     def decode(self, tokens: List[int]) -> str:
-        return "".join([str(token).replace("▁", " ") for token in tokens])[1:]
+        return self.tokenizer.decode(tokens)
