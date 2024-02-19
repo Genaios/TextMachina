@@ -10,13 +10,13 @@
 You can install all the dependencies with pip:
 
 ```bash
-pip install text_machina[all]
+pip install text-machina[all]
 ```
 
 or just with specific dependencies for an specific LLM provider or development dependencies (see `setup.py`)):
 
 ```bash
-pip install text_machina[anthropic,dev]
+pip install text-machina[anthropic,dev]
 ```
 
 ## Installing from source
