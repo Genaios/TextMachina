@@ -77,13 +77,13 @@ The following diagram depicts the ![icon](https://github.com/Genaios/TextMachina
 You can install all the dependencies with pip:
 
 ```
-pip install text_machina[all]
+pip install text-machina[all]
 ```
 
 or just with specific dependencies for an specific LLM provider or development dependencies (see [setup.py](setup.py)):
 
 ```
-pip install text_machina[anthropic,dev]
+pip install text-machina[anthropic,dev]
 ```
 
 You can also install directly from source:

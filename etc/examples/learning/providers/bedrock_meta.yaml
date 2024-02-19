@@ -1,0 +1,43 @@
+# Config for everything related to dataset generation inputs
+input_config:
+    # Dataset metadata
+    domain: tweets
+    language: en
+
+    # Dataset generator parameters
+    quantity: 10
+    random_sample_human: true
+    
+    # HuggingFace dataset params
+    dataset: tweet_eval
+    dataset_text_column: text
+    dataset_params:
+        split: train
+        name: irony
+
+    # Prompt template
+    template: >-
+        Write a tweet response to the following tweet:\n'{text}'\n\nTweet: 
+
+    # Extractor params
+    extractor: auxiliary
+    max_input_tokens: 256
+    
+# Config for model instantiation
+# Requires `AWS_ACCESS_KEY_ID=<key>` and
+# `AWS_SECRET_ACCESS_KEY=<key>` env variables.
+model_config:
+    provider: bedrock
+    model_name: meta.llama2-13b-chat-v1
+    threads: 8
+    retries:
+        max_attempts: 5
+        mode: standard
+    region_name: "us-east-1"
+    
+# Decoding args
+generation_config:
+    # Ignore use `maxTokenCount` to get automatic length estimation
+    # maxTokenCount: 4096
+    temperature: 0
+    top_p: 0.9
