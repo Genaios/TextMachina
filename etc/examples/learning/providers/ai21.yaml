@@ -31,11 +31,11 @@ model_config:
     threads: 8
     num_retries: 5
     timeout_sec: 30
-    api_type: CHAT
+    api_type: COMPLETION
     
 # Decoding args
 generation_config:
-    # Ignore use `maxTokens` to get automatic length estimation
-    # maxTokens: 4096
-    temperature: 0
-    topP: 0.9
+    # Ignore use `max_tokens` to get automatic length estimation
+    # max_tokens: 4096
+    temperature: 0.7
+    top_p: 0.9

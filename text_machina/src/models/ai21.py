@@ -1,7 +1,8 @@
 import os
 from typing import Dict
 
-import ai21
+from ai21 import AI21Client
+from ai21.models import ChatMessage
 
 from ..common.logging import get_logger
 from ..config import ModelConfig
@@ -20,11 +21,11 @@ class AI21Model(TextGenerationModel):
 
     def __init__(self, model_config: ModelConfig):
         super().__init__(model_config)
-        ai21.num_retries = getattr(self.model_config, "num_retries", 5)
-        ai21.timeout_sec = getattr(self.model_config, "timeout_sec", 30)
-        ai21.api_host = getattr(self.model_config, "api_host", ai21.api_host)
-        ai21.api_version = getattr(
-            self.model_config, "api_version", ai21.api_version
+        api_key = os.environ["AI21_API_KEY"]
+        num_retries = getattr(self.model_config, "num_retries", 5)
+        timeout_sec = getattr(self.model_config, "timeout_sec", 30)
+        self.client = AI21Client(
+            api_key=api_key, num_retries=num_retries, timeout_sec=timeout_sec
         )
 
     def generate_completion(
@@ -45,25 +46,29 @@ class AI21Model(TextGenerationModel):
         return completion
 
     def _chat_request(self, prompt: str, generation_config: Dict) -> str:
-        return ai21.Chat.execute(
-            api_key=os.environ["AI21_API_KEY"],
-            model=self.model_config.model_name,
-            messages=[
-                {
-                    "text": prompt,
-                    "role": "user",
-                }
-            ],
-            system="",
-            numResults=1,
-            **generation_config,
-        )["outputs"][0]["text"]
+        return (
+            self.client.chat.create(
+                model=self.model_config.model_name,
+                messages=[
+                    ChatMessage(
+                        text=prompt,
+                        role="user",
+                    ),
+                ],
+                system="",
+                **generation_config,
+            )
+            .outputs[0]
+            .text
+        )
 
     def _completion_request(self, prompt: str, generation_config: Dict) -> str:
-        return ai21.Completion.execute(
-            api_key=os.environ["AI21_API_KEY"],
-            model=self.model_config.model_name,
-            prompt=prompt,
-            numResults=1,
-            **generation_config,
-        )["completions"][0]["data"]["text"]
+        return (
+            self.client.completion.create(
+                prompt=prompt,
+                model=self.model_config.model_name,
+                **generation_config,
+            )
+            .completions[0]
+            .data.text
+        )

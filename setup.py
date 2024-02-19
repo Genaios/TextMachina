@@ -64,7 +64,7 @@ EXTRAS_REQUIRES: Dict[str, List[str]] = {
     "openai": ["openai>=1", "tiktoken>=0.4.0"],
     "azure_openai": ["openai>=1", "tiktoken>=0.4.0"],
     "bedrock": ["boto3", "tiktoken>=0.4.0"],
-    "ai21": ["ai21"],
+    "ai21": ["ai21>=2.0.0", "ai21_tokenizer>=0.3.11"],
     "anthropic": ["anthropic>=0.7.2"],
     "cohere": ["cohere>=4.36"],
     "huggingface-local": [
