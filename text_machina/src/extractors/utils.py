@@ -40,7 +40,7 @@ def get_spacy_model(language: str) -> spacy.lang:
     Returns:
         spacy.lang: a Spacy model.
     """
-    spacy_model = SPACY_MODEL_MAPPING.get(language, "multilingual")
+    spacy_model = SPACY_MODEL_MAPPING.get(language, SPACY_MODEL_MAPPING["multilingual"])
 
     try:
         nlp = spacy.load(spacy_model)
