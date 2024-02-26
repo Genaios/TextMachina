@@ -1,3 +1,5 @@
+import hashlib
+import json
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -252,13 +254,12 @@ def get_save_path(
         Path: path to save a dataset.
 
     """
-    model_name = config.safe_model_name()
-    dataset_name = config.safe_dataset_name()
-    domain = config.safe_domain_name()
+    config_as_string = json.dumps(
+        config.model_dump(), sort_keys=True, default=str
+    ).encode()
+    prefix = hashlib.sha256(config_as_string).hexdigest()
 
     parent = save_dir / run_name
-
-    prefix = f"{domain}_{dataset_name}_{model_name}"
     save_path = parent / prefix
 
     # check if path with prefix exists
