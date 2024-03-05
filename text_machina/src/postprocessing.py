@@ -120,6 +120,7 @@ def truncate(
 
         # the remainder will be truncated based on mean +-std estimations
         remainder = df[~df.index.isin(grouped.index)].copy()
+        remainder = remainder[remainder["domain"] == "domain"]
 
         # texts with similar token lengths are grouped together
         # to better approximate domain token length distribution
@@ -448,6 +449,7 @@ def postprocess(dataset: Dataset, task_type: TaskType) -> Dataset:
     Returns:
         Dataset: the postprocessed dataset.
     """
+
     single_text_actions = [
         fix_encoding,
         strip,
@@ -462,12 +464,22 @@ def postprocess(dataset: Dataset, task_type: TaskType) -> Dataset:
     ]
 
     if task_type in {TaskType.DETECTION, TaskType.ATTRIBUTION}:
-        actions = (
-            single_text_actions
-            + [truncate]
-            + full_dataset_actions
-            + [remove_label_duplicates]
-        )
+        if len(set(dataset["label"])) < 2:
+            _logger.info(
+                "Dataset only has single label, truncation will not be applied."
+            )
+            actions = (
+                single_text_actions
+                + full_dataset_actions
+                + [remove_label_duplicates]
+            )
+        else:
+            actions = (
+                single_text_actions
+                + [truncate]
+                + full_dataset_actions
+                + [remove_label_duplicates]
+            )
     else:
         actions = single_text_actions + full_dataset_actions  # type: ignore
 
