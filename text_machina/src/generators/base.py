@@ -99,4 +99,8 @@ class DatasetGenerator(ABC):
             "config_path",
             [str(self.config.path)] * len(dataset),
         )
+        dataset = dataset.add_column(
+            "language",
+            [str(self.config.input.language)] * len(dataset),
+        )
         return dataset
