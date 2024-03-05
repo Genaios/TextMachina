@@ -120,6 +120,7 @@ def truncate(
 
         # the remainder will be truncated based on mean +-std estimations
         remainder = df[~df.index.isin(grouped.index)].copy()
+        remainder = remainder[remainder["domain"] == "domain"]
 
         # texts with similar token lengths are grouped together
         # to better approximate domain token length distribution
