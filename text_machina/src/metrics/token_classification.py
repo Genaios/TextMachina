@@ -115,9 +115,11 @@ def prepare_dataset(
         batched=True,
     )
     dataset = dataset.map(
-        prepare_tags_for_mixcase
-        if task_type == TaskType.MIXCASE
-        else prepare_tags_for_boundary,
+        (
+            prepare_tags_for_mixcase
+            if task_type == TaskType.MIXCASE
+            else prepare_tags_for_boundary
+        ),
         input_columns=["offset_mapping", "label"],
         batched=True,
         fn_kwargs={"label_mapping": label_mapping},

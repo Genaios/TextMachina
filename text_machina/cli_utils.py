@@ -117,7 +117,7 @@ def generate_dataset(
 
     dataset = postprocess(dataset, configs[0].task_type)
 
-    dataset.save_to_disk(save_dir)
+    dataset.save_to_disk(save_dir.as_posix())
 
     _logger.info(
         f"A total of {errors} errors have been found in the generation process."
