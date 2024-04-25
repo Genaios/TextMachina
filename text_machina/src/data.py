@@ -185,7 +185,7 @@ def serialize_dataset(
 
     save_path.mkdir(parents=True, exist_ok=True)
 
-    dataset.save_to_disk(save_path)
+    dataset.save_to_disk(save_path.as_posix())
     _logger.info(f"The dataset has been saved in {save_path}")
 
     return save_path
@@ -203,10 +203,12 @@ def concatenate(paths: List[Path], save_path: Path) -> Dataset:
         Dataset: the merged dataset.
     """
     save_path.mkdir(parents=True, exist_ok=True)
-    dataset = load_from_disk(paths[0])
+    dataset = load_from_disk(paths[0].as_posix())
 
     for path in paths[1:]:
-        dataset = concatenate_datasets([dataset, load_from_disk(path)])
+        dataset = concatenate_datasets(
+            [dataset, load_from_disk(path.as_posix())]
+        )
 
     return dataset
 

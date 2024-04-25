@@ -100,9 +100,9 @@ class BedrockModel(TextGenerationModel):
             request_body = {"prompt": prompt, **generation_config}
         elif bedrock_provider == "anthropic":
             if "maxTokenCount" in generation_config:
-                generation_config[
-                    "max_tokens_to_sample"
-                ] = generation_config.pop("maxTokenCount")
+                generation_config["max_tokens_to_sample"] = (
+                    generation_config.pop("maxTokenCount")
+                )
             request_body = {"prompt": prompt, **generation_config}
         elif bedrock_provider == "cohere":
             # length constrainers work directly on providers themselves
