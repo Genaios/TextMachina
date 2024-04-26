@@ -85,6 +85,7 @@ class BedrockModel(TextGenerationModel):
             "anthropic",
             "cohere",
             "meta",
+            "mistral",
         }
 
         if bedrock_provider == "amazon":
@@ -118,6 +119,13 @@ class BedrockModel(TextGenerationModel):
                     "maxTokenCount"
                 )
             request_body = {"prompt": prompt, **generation_config}
+        elif bedrock_provider == "mistral":
+            if "maxTokenCount" in generation_config:
+                generation_config["max_tokens"] = generation_config.pop(
+                    "maxTokenCount"
+                )
+            request_body = {"prompt": prompt, **generation_config}
+
         return json.dumps(request_body)
 
     def get_completion_from_response_body(self, response_body: Dict) -> str:
@@ -138,6 +146,7 @@ class BedrockModel(TextGenerationModel):
             "anthropic",
             "cohere",
             "meta",
+            "mistral",
         }
 
         if bedrock_provider == "amazon":
@@ -150,5 +159,7 @@ class BedrockModel(TextGenerationModel):
             completion = response_body["generations"][0]["text"]
         elif bedrock_provider == "meta":
             completion = response_body["generation"]
+        elif bedrock_provider == "mistral":
+            completion = response_body["outputs"][0]["text"]
 
         return completion
