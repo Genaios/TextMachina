@@ -34,11 +34,15 @@ class AnthropicModel(TextGenerationModel):
         generation_config: Dict,
     ) -> str:
         try:
-            completion = self.client.completions.create(
-                model=self.model_config.model_name,
-                prompt=prompt,
-                **generation_config,
-            ).completion
+            completion = (
+                self.client.messages.create(
+                    model=self.model_config.model_name,
+                    messages=[{"role": "user", "content": prompt}],
+                    **generation_config,
+                )
+                .content[0]
+                .text
+            )
         except Exception as e:
             _logger.info(f"Unrecoverable exception during the request: {e}")
             return GENERATION_ERROR

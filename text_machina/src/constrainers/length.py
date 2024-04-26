@@ -45,20 +45,19 @@ class LengthConstrainer(Constrainer, ABC):
         """
         min_new_tokens, max_new_tokens = self.estimate()
 
-        if self.provider in ["openai", "azure_openai"]:
-            return {"max_tokens": max_new_tokens}
-        elif self.provider == "anthropic":
-            return {"max_tokens_to_sample": max_new_tokens}
-        elif self.provider == "cohere":
+        if self.provider in [
+            "openai",
+            "azure_openai",
+            "anthropic",
+            "cohere",
+            "ai21",
+            "inference_server",
+        ]:
             return {"max_tokens": max_new_tokens}
         elif self.provider == "vertex":
             return {"max_output_tokens": max_new_tokens}
         elif self.provider == "bedrock":
             return {"maxTokenCount": max_new_tokens}
-        elif self.provider == "ai21":
-            return {"max_tokens": max_new_tokens}
-        elif self.provider == "inference_server":
-            return {"max_tokens": max_new_tokens}
         return {
             "max_new_tokens": max_new_tokens,
             "min_new_tokens": min_new_tokens,
