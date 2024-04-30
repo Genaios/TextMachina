@@ -5,7 +5,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from ..config import ModelConfig
 from .base import TextGenerationModel
-from .types import QUANTIZATION_CONFIGS
+from .types import QUANTIZATION_CONFIGS, CompletionType
 
 
 class HuggingFaceLocalModel(TextGenerationModel):
@@ -56,6 +56,16 @@ class HuggingFaceLocalModel(TextGenerationModel):
         Overriden method to generate completions using
         HuggingFace's `generate` method with batches
         """
+        if self.model_config.api_type == CompletionType.CHAT:
+            prompts = [
+                self.tokenizer.apply_chat_template(
+                    [{"role": "user", "content": prompt}],
+                    add_generation_prompt=True,
+                    tokenize=False,
+                )
+                for prompt in prompts
+            ]
+
         tokenized_prompts = self.tokenizer(
             prompts, truncation=True, padding=True, return_tensors="pt"
         )
