@@ -28,7 +28,7 @@ class HuggingFaceRemoteModel(TextGenerationModel):
             max_retries=Retry(
                 total=getattr(self.model_config, "max_retries", 5),
                 backoff_factor=getattr(
-                    self.model_config, "backoff_factor", 0.5
+                    self.model_config, "backoff_factor", 2
                 ),
                 status_forcelist=[
                     code for code in requests.status_codes._codes if code != 200
