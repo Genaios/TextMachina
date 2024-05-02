@@ -8,6 +8,7 @@ from .base import Extractor
 from .combined import Combined
 from .dummy import Dummy
 from .entity_list import EntityList
+from .example import Example
 from .noun_list import NounList
 from .sentence_gap import SentenceGap
 from .sentence_masking import SentenceMasking
@@ -30,6 +31,7 @@ EXTRACTORS: Mapping[str, Type[Extractor]] = {
     "word_prefix": WordPrefix,
     "word_gap": WordGap,
     "word_masking": WordMasking,
+    "example": Example,
 }
 
 

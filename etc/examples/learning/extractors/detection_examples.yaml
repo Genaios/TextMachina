@@ -1,0 +1,56 @@
+# Config for everything related to dataset generation inputs
+input_config:
+
+    # Dataset metadata
+    domain: legal
+    language: de
+    
+    # Dataset generator parameters
+    quantity: 10
+    random_sample_human: true
+
+    
+    # HuggingFace dataset params
+    dataset: coastalcph/multi_eurlex
+    dataset_text_column: text
+    dataset_params:
+        split: train
+        name: de
+
+    # Prompt template
+    template: >-
+        Write a legal document in German. Here you have some examples:\n
+        - Example 1: {example_1}\n
+        - Example 2: {example_2}\n
+        Document: 
+        
+    # Extractor params
+    # The `example` extractor fills the prompt template with the text column
+    # of randomly sampled (w/o replacement) examples from the dataset.
+    # You can specify if the examples will be random for all the samples
+    # (`all_random` to True) or be the same for all the samples
+    # (`all_random` to False). Also, the extractor accepts the random `seed`.
+    extractor: example
+    extractor_args:
+        example:
+            all_random: true
+            seed: 13
+
+    max_input_tokens: 256
+    
+# Config for model instantiation
+# Requires `OPENAI_API_KEY=<key>` environment variable.
+model_config:
+    provider: openai
+    model_name: gpt-3.5-turbo-instruct
+    api_type: COMPLETION
+    threads: 8
+    max_retries: 5
+    timeout: 120
+    
+# Decoding args
+generation_config:
+    # Ignore use `max_tokens` to get automatic length estimation
+    # max_tokens: 100
+    temperature: 0.7
+    presence_penalty: 1.0
