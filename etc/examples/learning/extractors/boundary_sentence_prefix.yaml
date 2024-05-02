@@ -22,9 +22,9 @@ input_config:
         Text: 
 
     # Extractor params
-      # Without specifying the `k` (number of sentences) argument,
+    # Without specifying the `k` (number of sentences) argument,
     # the `sentence_prefix` extractor will randomly sample the
-    # sentence-length of the prefixes.
+    # sentence length of the prefixes.
     extractor: sentence_prefix
     max_input_tokens: 256
     
