@@ -30,6 +30,14 @@ class HuggingFaceLocalModel(TextGenerationModel):
         This method is not used, since generations are done
         with batches using `generate_completions`.
         """
+
+        if self.model_config.api_type == CompletionType.CHAT:
+            prompt = self.tokenizer.apply_chat_template(
+                [{"role": "user", "content": prompt}],
+                add_generation_prompt=True,
+                tokenize=False,
+            )
+
         tokenized = self.tokenizer(
             prompt, truncation=True, padding=True, return_tensors="pt"
         )
