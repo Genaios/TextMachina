@@ -20,6 +20,8 @@ TOKENIZERS: Mapping[str, str] = {
     "ai21": "AI21Tokenizer",
     "azure_openai": "AzureOpenAITokenizer",
     "inference_server": "InferenceServerTokenizer",
+    "open_router": "OpenRouterTokenizer",
+    "deep_infra": "DeepInfraTokenizer",
 }
 
 
