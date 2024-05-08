@@ -17,6 +17,8 @@ MODELS: Mapping[str, str] = {
     "ai21": "AI21Model",
     "azure_openai": "AzureOpenAIModel",
     "inference_server": "InferenceServerModel",
+    "open_router": "OpenRouterModel",
+    "deep_infra": "DeepInfraModel",
 }
 
 

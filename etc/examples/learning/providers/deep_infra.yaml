@@ -1,0 +1,43 @@
+# Config for everything related to dataset generation inputs
+input_config:
+    # Dataset metadata
+    domain: tweets
+    language: en
+
+    # Dataset generator parameters
+    quantity: 10
+    random_sample_human: true
+    
+    # HuggingFace dataset params
+    dataset: tweet_eval
+    dataset_text_column: text
+    dataset_params:
+        split: train
+        name: irony
+
+    # Prompt template
+    template: >-
+        Write a tweet response to the following tweet:\n'{text}'\n\nTweet: 
+
+    # Extractor params
+    extractor: auxiliary
+    max_input_tokens: 256
+    
+# Config for model instantiation
+# Requires `DEEP_INFRA_API_KEY=<key>` environment variable.
+model_config:
+    provider: deep_infra
+    base_url: https://api.deepinfra.com/v1/openai
+    # `model_name` must be the deployment name, not the backbone model
+    model_name: mistralai/Mixtral-8x22B-Instruct-v0.1
+    api_type: CHAT
+    threads: 8
+    max_retries: 10
+    timeout: 120
+    
+# Decoding args
+generation_config:
+    # Ignore use `max_tokens` to get automatic length estimation
+    # max_tokens: 100
+    temperature: 0.7
+    presence_penalty: 1.0

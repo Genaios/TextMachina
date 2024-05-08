@@ -52,6 +52,8 @@ class LengthConstrainer(Constrainer, ABC):
             "cohere",
             "ai21",
             "inference_server",
+            "open_router",
+            "deep_infra",
         ]:
             return {"max_tokens": max_new_tokens}
         elif self.provider == "vertex":
