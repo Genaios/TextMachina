@@ -4,15 +4,15 @@ from typing import Dict
 from ai21 import AI21Client
 from ai21.models import ChatMessage
 
-from ..common.logging import get_logger
-from ..config import ModelConfig
-from .base import TextGenerationModel
-from .types import GENERATION_ERROR, CompletionType
+from ...common.logging import get_logger
+from ...config import ModelConfig
+from ..base import GenerationModel
+from ..types import GENERATION_ERROR, CompletionType
 
 _logger = get_logger(__name__)
 
 
-class AI21Model(TextGenerationModel):
+class AI21Model(GenerationModel[str]):
     """
     Generates completions using AI21 models.
 
@@ -28,7 +28,7 @@ class AI21Model(TextGenerationModel):
             api_key=api_key, num_retries=num_retries, timeout_sec=timeout_sec
         )
 
-    def generate_completion(
+    def sample_generate(
         self,
         prompt: str,
         generation_config: Dict,

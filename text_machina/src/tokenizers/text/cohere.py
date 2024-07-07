@@ -3,7 +3,7 @@ from typing import List
 
 import cohere
 
-from .base import Tokenizer
+from ..base import Tokenizer
 
 
 class CohereTokenizer(Tokenizer):

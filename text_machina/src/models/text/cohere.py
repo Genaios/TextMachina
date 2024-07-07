@@ -3,16 +3,16 @@ from typing import Dict
 
 from cohere import Client
 
-from ..common.logging import get_logger
-from ..common.utils import get_instantiation_args
-from ..config import ModelConfig
-from .base import TextGenerationModel
-from .types import GENERATION_ERROR
+from ...common.logging import get_logger
+from ...common.utils import get_instantiation_args
+from ...config import ModelConfig
+from ..base import GenerationModel
+from ..types import GENERATION_ERROR
 
 _logger = get_logger(__name__)
 
 
-class CohereModel(TextGenerationModel):
+class CohereModel(GenerationModel[str]):
     """
     Generates completions using Cohere models.
 
@@ -28,7 +28,7 @@ class CohereModel(TextGenerationModel):
             ),
         )
 
-    def generate_completion(
+    def sample_generate(
         self,
         prompt: str,
         generation_config: Dict,

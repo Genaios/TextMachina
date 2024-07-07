@@ -2,14 +2,14 @@ from typing import List
 
 import tiktoken
 
-from .base import Tokenizer
+from ..base import Tokenizer
 
 
-class VertexTokenizer(Tokenizer):
+class DeepInfraTokenizer(Tokenizer):
     """
-    Tokenizer for VertexAI models.
+    Tokenizer for DeepInfra models.
 
-    VertexAI does not offer tokenizers. GPT-4 Tokenizer is used instead.
+    DeepInfra does not offer tokenizers. GPT-4 Tokenizer is used instead.
     """
 
     def __init__(self, model_name: str):

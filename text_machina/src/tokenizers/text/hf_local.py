@@ -2,7 +2,7 @@ from typing import List
 
 from transformers import AutoTokenizer
 
-from .base import Tokenizer
+from ..base import Tokenizer
 
 
 class HuggingFaceLocalTokenizer(Tokenizer):

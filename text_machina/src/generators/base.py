@@ -8,6 +8,7 @@ from ..config import Config
 from ..constrainers import get_length_constrainer
 from ..data import PromptedDatasetBuilder
 from ..models import get_model
+from ..types import Modality
 
 _logger = get_logger(__name__)
 
@@ -19,7 +20,7 @@ class DatasetGenerator(ABC):
 
     def __init__(self, config: Config) -> None:
         self.config = config
-        self.model = get_model(self.config.model)
+        self.model = get_model(self.config.input.modality, self.config.model)
         self.prompter = PromptedDatasetBuilder(self.config)
 
     def generate(self) -> Dataset:
@@ -44,19 +45,25 @@ class DatasetGenerator(ABC):
         """
         # prepare inputs
         prompted_dataset = self.prompter.build()
+
         _logger.info(
             f"This is how one input looks like: {prompted_dataset.prompted_texts[0]}"
         )
 
-        # instantiate length constrainer
-        length_constrainer = get_length_constrainer(
-            texts=prompted_dataset.human_texts,
-            model_name=self.config.model.model_name,
-            provider=self.config.model.provider,
-        )
+        # Apply constrainers only in text modality (Rethink this)
+        # TODO: Refactor this to add constrainers to the corresponding modality.
+        if self.config.input.modality == Modality.TEXT:
+            length_constrainer = get_length_constrainer(
+                texts=prompted_dataset.human_texts,
+                model_name=self.config.model.model_name,
+                provider=self.config.model.provider,
+            )
 
-        # constrain generation config
-        generation_config = length_constrainer.constrain(self.config.generation)
+            generation_config = length_constrainer.constrain(
+                self.config.generation
+            )
+        else:
+            generation_config = self.config.generation
 
         _logger.info(
             f"Generating completions for with args:\n"
@@ -65,7 +72,7 @@ class DatasetGenerator(ABC):
         )
 
         # run generator
-        generations = self.model.generate_completions(
+        generations = self.model.batched_generate(
             prompts=prompted_dataset.prompted_texts,
             generation_config=generation_config,
         )

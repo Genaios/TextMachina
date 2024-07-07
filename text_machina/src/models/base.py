@@ -1,14 +1,16 @@
 from abc import ABC, abstractmethod
 from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
-from typing import Dict, List
+from typing import Dict, Generic, List, TypeVar
 
 from tqdm import tqdm
 
 from ..config import ModelConfig
 
+T = TypeVar("T")
 
-class TextGenerationModel(ABC):
+
+class GenerationModel(ABC, Generic[T]):
     """
     Base class for LLMs.
     """
@@ -17,38 +19,39 @@ class TextGenerationModel(ABC):
         self.model_config = deepcopy(model_config)
 
     @abstractmethod
-    def generate_completion(
+    def sample_generate(
         self,
         prompt: str,
         generation_config: Dict,
-    ) -> str:
+    ) -> T:
         """
-        Generates a completion for a `prompt` by decoding a model
+        Generates by prompting with `prompt` a generation model
         parameterized by `generation_config`. This method has to be
         overwritten to implement the completion code.
 
         Args:
-            prompts (str): prompt to generate completions for.
-            generation_config (Dict): Dictionary containing the generation parameters.
+            prompt (str): prompt to generate.
+            generation_config (Dict): generation parameters
 
         Returns:
-            str: Generated completion or `.types.GENERATION_ERROR` if there was some error.
+            T: a generation either text, image, audio, or video.
         """
         ...
 
-    def generate_completions(
+    # TODO: Rethink the output type, e.g., generator of bytes.
+    def batched_generate(
         self,
         prompts: List[str],
         generation_config: Dict,
-    ) -> List[str]:
-        """Generates a completion for each prompt in a list of `prompts`.
+    ) -> List[T]:
+        """Generates using each prompt in the list of `prompts`.
 
         Args:
             prompts (List[str]): List of prompts to generate completions for.
             generation_config (Dict): Dictionary containing the generation parameters.
 
         Returns:
-            List[str]: List of generated completions.
+            List[T]: a list of generations
         """
         completions, responses = [], []
         with ThreadPoolExecutor(
@@ -57,7 +60,7 @@ class TextGenerationModel(ABC):
             for prompt in prompts:
                 responses.append(
                     thread_pool.submit(
-                        self.generate_completion, prompt, generation_config
+                        self.sample_generate, prompt, generation_config
                     )
                 )
             # Wait completions

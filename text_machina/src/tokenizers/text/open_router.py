@@ -2,14 +2,14 @@ from typing import List
 
 import tiktoken
 
-from .base import Tokenizer
+from ..base import Tokenizer
 
 
-class DeepInfraTokenizer(Tokenizer):
+class OpenRouterTokenizer(Tokenizer):
     """
-    Tokenizer for DeepInfra models.
+    Tokenizer for OpenRouter models.
 
-    DeepInfra does not offer tokenizers. GPT-4 Tokenizer is used instead.
+    OpenRouter does not offer tokenizers. GPT-4 Tokenizer is used instead.
     """
 
     def __init__(self, model_name: str):

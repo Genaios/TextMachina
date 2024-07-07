@@ -2,14 +2,14 @@ from typing import List
 
 import tiktoken
 
-from .base import Tokenizer
+from ..base import Tokenizer
 
 
-class OpenRouterTokenizer(Tokenizer):
+class AzureOpenAITokenizer(Tokenizer):
     """
-    Tokenizer for OpenRouter models.
-
-    OpenRouter does not offer tokenizers. GPT-4 Tokenizer is used instead.
+    Tokenizer for AzureOpenAI models.
+    Tokenizer can't be inferred from the deployment name
+    of a model. GPT-4 Tokenizer is used instead.
     """
 
     def __init__(self, model_name: str):

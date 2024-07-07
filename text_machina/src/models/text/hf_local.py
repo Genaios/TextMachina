@@ -3,12 +3,12 @@ from typing import Dict, List
 from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from ..config import ModelConfig
-from .base import TextGenerationModel
-from .types import QUANTIZATION_CONFIGS, CompletionType
+from ...config import ModelConfig
+from ..base import GenerationModel
+from ..types import QUANTIZATION_CONFIGS, CompletionType
 
 
-class HuggingFaceLocalModel(TextGenerationModel):
+class HuggingFaceLocalModel(GenerationModel[str]):
     """
     Generates completions using HuggingFace's models locally deployed.
     """
@@ -24,11 +24,11 @@ class HuggingFaceLocalModel(TextGenerationModel):
         self.model = self.__load_model()
         self.tokenizer = self.__load_tokenizer()
 
-    def generate_completion(self, prompt: str, generation_config: Dict) -> str:
+    def sample_generate(self, prompt: str, generation_config: Dict) -> str:
         """
-        Override `generate_completions` for completeness.
+        Override `sample_generate` for completeness.
         This method is not used, since generations are done
-        with batches using `generate_completions`.
+        with batches using `batched_generate`.
         """
 
         if self.model_config.api_type == CompletionType.CHAT:
@@ -55,7 +55,7 @@ class HuggingFaceLocalModel(TextGenerationModel):
             clean_up_tokenization_spaces=True,
         )
 
-    def generate_completions(
+    def batched_generate(
         self,
         prompts: List[str],
         generation_config: Dict,

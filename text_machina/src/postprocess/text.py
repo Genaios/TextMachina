@@ -10,10 +10,10 @@ import pandas as pd
 import requests
 from datasets import Dataset, disable_caching
 
-from .common.logging import get_logger
-from .common.utils import get_cache_path
-from .models.types import GENERATION_ERROR
-from .types import TaskType
+from ..common.logging import get_logger
+from ..common.utils import get_cache_path
+from ..models.types import GENERATION_ERROR
+from ..types import TaskType
 
 _logger = get_logger(__name__)
 
@@ -95,7 +95,7 @@ def truncate(
     Returns:
         Dataset: the truncated dataset
     """
-    from .extractors.utils import spacy_pipeline
+    from ..extractors.utils import spacy_pipeline
 
     np.random.seed(0)
 

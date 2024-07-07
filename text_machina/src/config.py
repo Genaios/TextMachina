@@ -1,3 +1,4 @@
+from functools import reduce
 from itertools import chain
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional, Tuple, Type
@@ -11,7 +12,7 @@ from pydantic import (
 )
 from yaml import full_load, safe_load
 
-from .types import TaskType
+from .types import Modality, TaskType
 
 
 class InputConfig(BaseModel):
@@ -22,8 +23,15 @@ class InputConfig(BaseModel):
     quantity: int = Field(gt=0, description="Number of samples to generate.")
     domain: str = Field(description="Domain of a dataset.")
     dataset: str = Field(description="Name (HF Hub) or path to the dataset.")
+    modality: Modality = Field(
+        description="Modality either `text`, `image`, `audio`, or `video`"
+    )
     dataset_text_column: str = Field(
         description="Name of column in the dataset containing the text."
+    )
+    dataset_image_column: Optional[str] = Field(
+        description="Name of the column in the dataset containing the image.",
+        default=None,
     )
     dataset_params: Dict[str, Any] = Field(
         description="Arguments to load the dataset."
@@ -109,8 +117,8 @@ class ModelConfig(BaseModel):
     Wrapper for the input_config field.
     """
 
-    provider: str = Field(description="Provider of text generation models.")
-    model_name: str = Field(description="Name of a text generation model.")
+    provider: str = Field(description="Provider of generation model.")
+    model_name: str = Field(description="Name of a generation model.")
     threads: int = Field(
         default=8,
         gt=0,
@@ -136,7 +144,8 @@ class ModelConfig(BaseModel):
         from .common import InvalidProvider
         from .models import MODELS
 
-        if provider not in MODELS.keys():
+        all_models = reduce(lambda d1, d2: {**d1, **d2}, MODELS.values())
+        if provider not in all_models.keys():
             raise InvalidProvider(provider)
         return provider
 

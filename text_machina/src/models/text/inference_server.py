@@ -3,11 +3,11 @@ from typing import Any, Dict
 import requests
 from requests.adapters import HTTPAdapter, Retry
 
-from ..common.exceptions import InvalidInferenceServer
-from ..common.logging import get_logger
-from ..config import ModelConfig
-from .base import TextGenerationModel
-from .types import GENERATION_ERROR
+from ...common.exceptions import InvalidInferenceServer
+from ...common.logging import get_logger
+from ...config import ModelConfig
+from ..base import GenerationModel
+from ..types import GENERATION_ERROR
 
 _logger = get_logger(__name__)
 
@@ -15,7 +15,7 @@ _logger = get_logger(__name__)
 ALLOWED_INFERENCE_SERVERS = ["vllm", "trt"]
 
 
-class InferenceServerModel(TextGenerationModel):
+class InferenceServerModel(GenerationModel[str]):
     """
     Generates completions using models deployed
     on inference servers like TRT or VLLM. This
@@ -80,7 +80,7 @@ class InferenceServerModel(TextGenerationModel):
         else:
             return response["text_output"][prompt_len:]
 
-    def generate_completion(
+    def sample_generate(
         self,
         prompt: str,
         generation_config: Dict,

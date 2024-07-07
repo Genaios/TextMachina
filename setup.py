@@ -22,6 +22,8 @@ TEXT_GENERATION_DEPS = [
     "fasttext-wheel",
 ]
 
+IMAGE_GENERATION_DEPS = ["pillow>=10.4.0"]
+
 EXPLORE_DEPS = [
     "rich>=13.7.0",
     "scikit-learn>=1.3.2",
@@ -34,7 +36,7 @@ EXPLORE_DEPS = [
     "seqeval>=1.2.2",
 ]
 
-DEPS = TEXT_GENERATION_DEPS + EXPLORE_DEPS
+DEPS = TEXT_GENERATION_DEPS + IMAGE_GENERATION_DEPS + EXPLORE_DEPS
 
 DEV_DEPS = [
     "black",

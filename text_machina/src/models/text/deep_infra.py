@@ -2,8 +2,8 @@ import os
 
 from openai import OpenAI
 
-from ..common.utils import get_instantiation_args
-from ..config import ModelConfig
+from ...common.utils import get_instantiation_args
+from ...config import ModelConfig
 from .openai import OpenAIModel
 
 

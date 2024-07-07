@@ -3,7 +3,7 @@ from typing import List
 
 from anthropic import Anthropic
 
-from .base import Tokenizer
+from ..base import Tokenizer
 
 
 class AnthropicTokenizer(Tokenizer):

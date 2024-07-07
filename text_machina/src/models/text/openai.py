@@ -3,16 +3,16 @@ from typing import Dict
 
 from openai import OpenAI
 
-from ..common.logging import get_logger
-from ..common.utils import get_instantiation_args
-from ..config import ModelConfig
-from .base import TextGenerationModel
-from .types import GENERATION_ERROR, CompletionType
+from ...common.logging import get_logger
+from ...common.utils import get_instantiation_args
+from ...config import ModelConfig
+from ..base import GenerationModel
+from ..types import GENERATION_ERROR, CompletionType
 
 _logger = get_logger(__name__)
 
 
-class OpenAIModel(TextGenerationModel):
+class OpenAIModel(GenerationModel[str]):
     """
     Generates completions using OpenAI models.
 
@@ -28,7 +28,7 @@ class OpenAIModel(TextGenerationModel):
             ),
         )
 
-    def generate_completion(
+    def sample_generate(
         self,
         prompt: str,
         generation_config: Dict,

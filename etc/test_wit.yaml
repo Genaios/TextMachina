@@ -1,0 +1,41 @@
+# Config for everything related to dataset generation inputs
+input_config:
+    # Dataset metadata
+    domain: general
+    language: en
+
+    # Modality
+    modality: image
+
+    # Dataset generator parameters
+    quantity: 5
+    random_sample_human: false
+    
+    # HuggingFace dataset params
+    dataset: scripts/google-wit-preprocessed
+    dataset_text_column: caption_attribution_description
+    dataset_image_column: image
+    dataset_params:
+        split: train
+
+    # Prompt template
+    template: >-
+        Context: {context_page_description}\nImage: '{caption_attribution_description}, real photograph 45mm'. 
+
+    # Extractor params
+    extractor: auxiliary
+    max_input_tokens: 128
+
+# Config for model instantiation
+# Requires `HF_TOKEN=<token>` environment variable.
+model_config:
+    provider: openai
+    model_name: dall-e-3
+    max_retries: 5
+    threads: 8
+    
+# Decoding args
+generation_config:
+    n: 1
+    size: "1024x1024"
+    quality: "standard"

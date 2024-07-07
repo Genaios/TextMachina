@@ -2,7 +2,7 @@ from typing import List
 
 from ai21_tokenizer import Tokenizer as AITokenizer
 
-from .base import Tokenizer
+from ..base import Tokenizer
 
 
 class AI21Tokenizer(Tokenizer):

@@ -1,7 +1,8 @@
 from enum import Enum
 from typing import List
 
-from pydantic import BaseModel, Field, model_validator
+from PIL.Image import Image
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class DetectionLabels(Enum):
@@ -38,6 +39,10 @@ class PromptedDataset(BaseModel):
 
     prompted_texts: List[str]
     human_texts: List[str]
+    human_images: List[Image] = []
+
+    # TODO: Change this, e.g., instead of using Image type, storing bytes
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class TaskType(str, Enum):
@@ -45,6 +50,13 @@ class TaskType(str, Enum):
     ATTRIBUTION: str = "attribution"
     BOUNDARY: str = "boundary"
     MIXCASE: str = "mixcase"
+
+
+class Modality(str, Enum):
+    IMAGE: str = "image"
+    TEXT: str = "text"
+    AUDIO: str = "audio"
+    VIDEO: str = "video"
 
 
 class LabeledSpan(BaseModel):

@@ -57,7 +57,9 @@ class Extractor(ABC):
         """
         ...
 
-    def prepare_human(self, human_texts: List[str]) -> List[str]:
+    # TODO: Generalize this to new modalities. Now it's adhoc for images
+    # and breaks everything we had before adding images.
+    def prepare_human(self, human_texts: List[str], human_images) -> List[str]:
         """
         Prepares the human texts. Some extractors could need to modify
         human texts according to the extractions, e.g., remove prefixes
@@ -70,7 +72,7 @@ class Extractor(ABC):
         Returns:
             List[str]: prepared human texts.
         """
-        return human_texts
+        return human_texts, human_images
 
     def extract(self, dataset: Dataset) -> Dict[str, List[str]]:
         """

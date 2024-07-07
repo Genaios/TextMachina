@@ -5,15 +5,15 @@ import requests
 from requests.adapters import HTTPAdapter, Retry
 from transformers import AutoTokenizer
 
-from ..common.logging import get_logger
-from ..config import ModelConfig
-from .base import TextGenerationModel
-from .types import GENERATION_ERROR, CompletionType
+from ...common.logging import get_logger
+from ...config import ModelConfig
+from ..base import GenerationModel
+from ..types import GENERATION_ERROR, CompletionType
 
 _logger = get_logger(__name__)
 
 
-class HuggingFaceRemoteModel(TextGenerationModel):
+class HuggingFaceRemoteModel(GenerationModel[str]):
     """
     Generates completions using HuggingFace's models remotely deployed
     (HuggingFace's Inference API or Inference Endpoints).
@@ -41,7 +41,7 @@ class HuggingFaceRemoteModel(TextGenerationModel):
                 self.model_config.model_name
             )
 
-    def generate_completion(self, prompt: str, generation_config: Dict) -> str:
+    def sample_generate(self, prompt: str, generation_config: Dict) -> str:
         headers = {"Authorization": f'Bearer {os.environ["HF_TOKEN"]}'}
 
         inputs = prompt

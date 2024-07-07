@@ -4,15 +4,15 @@ from typing import Dict
 import requests
 from requests.adapters import HTTPAdapter, Retry
 
-from ..common.logging import get_logger
-from ..config import ModelConfig
-from .base import TextGenerationModel
-from .types import GENERATION_ERROR
+from ...common.logging import get_logger
+from ...config import ModelConfig
+from ..base import GenerationModel
+from ..types import GENERATION_ERROR
 
 _logger = get_logger(__name__)
 
 
-class OpenRouterModel(TextGenerationModel):
+class OpenRouterModel(GenerationModel[str]):
     """
     Generates completions using HuggingFace's models remotely deployed
     (HuggingFace's Inference API or Inference Endpoints).
@@ -35,7 +35,7 @@ class OpenRouterModel(TextGenerationModel):
         self.client.mount("http://", retry_adapter)
         self.client.mount("https://", retry_adapter)
 
-    def generate_completion(self, prompt: str, generation_config: Dict) -> str:
+    def sample_generate(self, prompt: str, generation_config: Dict) -> str:
         headers = {
             "Authorization": f'Bearer {os.environ["OPENROUTER_API_KEY"]}'
         }

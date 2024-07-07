@@ -11,13 +11,14 @@ from datasets import (
     load_dataset,
     load_from_disk,
 )
+from PIL.Image import Image
 
 from .common.logging import get_logger
 from .config import Config, InputConfig
 from .extractors import get_extractor
 from .models.types import GENERATION_ERROR
 from .tokenizers import get_tokenizer
-from .types import Prompt, PromptedDataset, TaskType
+from .types import Modality, Prompt, PromptedDataset, TaskType
 
 _logger = get_logger(__name__)
 
@@ -46,19 +47,26 @@ class PromptedDatasetBuilder:
         dataset = load_dataset_from_config(self.config.input)
 
         # sample human texts
-        human_texts, dataset = self.sampling(dataset)
+        human_texts, human_images, dataset = self.sampling(dataset)
 
         # compute prompt inputs and prepare human texts
         prompt_inputs = self.extractor.extract(dataset)
-        human_texts = self.extractor.prepare_human(human_texts)
+        human_texts, human_images = self.extractor.prepare_human(
+            human_texts, human_images
+        )
 
         # truncate the prompt inputs and format the prompts
         prompt_inputs = self.truncate_inputs(prompt_inputs)
         inputs = format_prompt(self.prompt.template, prompt_inputs)
+        return PromptedDataset(
+            prompted_texts=inputs,
+            human_texts=human_texts,
+            human_images=human_images,
+        )
 
-        return PromptedDataset(prompted_texts=inputs, human_texts=human_texts)
-
-    def sampling(self, dataset: Dataset) -> Tuple[List[str], Dataset]:
+    def sampling(
+        self, dataset: Dataset
+    ) -> Tuple[List[str], List[Image], Dataset]:
         """
         Sample human texts and texts to be used for generating MGT.
         The same amount is sampled in both cases.
@@ -75,24 +83,38 @@ class PromptedDatasetBuilder:
         dataset = dataset.shuffle()
         select_range = range(min(self.config.input.quantity, len(dataset)))
 
-        # Disable random_sample_human automatically for boundary tasks
-        if self.config.task_type == TaskType.BOUNDARY:
+        # Disable random_sample_human automatically for:
+        # - boundary tasks
+        # - Modalities other than text
+        if (
+            self.config.task_type == TaskType.BOUNDARY
+            or self.config.input.modality != Modality.TEXT
+        ):
             _logger.info(
                 "Automatically disabling `random_sample_human`"
                 f"for the {TaskType.BOUNDARY.value} task."
             )
             self.config.input.random_sample_human = False
 
+        human_images = []
+        # TODO: Refactor this to simplify for new modalities
         if self.config.input.random_sample_human:
             human_texts = dataset.select(select_range)[
                 self.config.input.dataset_text_column
             ]
+            if self.config.input.dataset_image_column:
+                human_images = dataset.select(select_range)[
+                    self.config.input.dataset_image_column
+                ]
             dataset = dataset.shuffle()
             dataset = dataset.select(select_range)
         else:
             dataset = dataset.select(select_range)
             human_texts = dataset[self.config.input.dataset_text_column]
-        return human_texts, dataset
+            if self.config.input.dataset_image_column:
+                human_images = dataset[self.config.input.dataset_image_column]
+
+        return human_texts, human_images, dataset
 
     def get_prompt(self) -> Prompt:
         """
@@ -124,6 +146,7 @@ class PromptedDatasetBuilder:
 
         max_input_tokens = self.config.input.max_input_tokens
         tokenizer = get_tokenizer(
+            modality=self.config.input.modality,
             provider=self.config.model.provider,
             model_name=self.config.model.model_name,
         )

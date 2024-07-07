@@ -20,8 +20,9 @@ from .src.exploration import get_explorer
 from .src.generators import get_generator
 from .src.metrics import run_metrics as _run_metrics
 from .src.models.types import GENERATION_ERROR
-from .src.postprocessing import filter_by_language, postprocess
-from .src.types import TaskType
+from .src.postprocess import postprocess
+from .src.postprocess.text import filter_by_language
+from .src.types import Modality, TaskType
 
 _logger = get_logger(__name__)
 
@@ -49,7 +50,8 @@ def generate_from_config(
     errors = count_errors(dataset)
     _logger.info(f"{errors} errors found in the generated dataset.")
 
-    dataset = filter_by_language(dataset, config.input.language)
+    if config.input.modality == Modality.TEXT:
+        dataset = filter_by_language(dataset, config.input.language)
 
     output_path = serialize_dataset(dataset, config, save_dir, run_name)
 
@@ -111,11 +113,12 @@ def generate_dataset(
 
         paths.append(path)
 
+    modality = configs[0].input.modality
     dataset = concatenate(paths, save_dir)
     statistics = compute_statistics(dataset)
     errors = count_errors(dataset)
 
-    dataset = postprocess(dataset, configs[0].task_type)
+    dataset = postprocess(modality, dataset, configs[0].task_type)
 
     dataset.save_to_disk(save_dir.as_posix())
 

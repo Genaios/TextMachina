@@ -8,16 +8,16 @@ from vertexai.preview.language_models import (
     TextGenerationModel as VertexTextGenerationModel,
 )
 
-from ..common.logging import get_logger
-from ..common.utils import get_instantiation_args
-from ..config import ModelConfig
-from .base import TextGenerationModel
-from .types import GENERATION_ERROR, CompletionType
+from ...common.logging import get_logger
+from ...common.utils import get_instantiation_args
+from ...config import ModelConfig
+from ..base import GenerationModel
+from ..types import GENERATION_ERROR, CompletionType
 
 _logger = get_logger(__name__)
 
 
-class VertexModel(TextGenerationModel):
+class VertexModel(GenerationModel[str]):
     """
     Generates completions using VertexAI models.
     Requires the definition of the `VERTEX_AI_CREDENTIALS_FILE=<path>` environment variable.
@@ -37,7 +37,7 @@ class VertexModel(TextGenerationModel):
         )
         self.model = self._get_model()
 
-    def generate_completion(
+    def sample_generate(
         self,
         prompt: str,
         generation_config: Dict,

@@ -3,4 +3,4 @@
 set -e
 set -x
 
-python -m pytest "text_generation"
+python -m pytest "text_machina"

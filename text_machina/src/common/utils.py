@@ -37,5 +37,4 @@ def get_cache_path() -> Path:
         os.getenv("TEXT_MACHINA_CACHE_DIR", default="/tmp/text_machina_cache")
     )
     path.mkdir(parents=True, exist_ok=True)
-
     return path

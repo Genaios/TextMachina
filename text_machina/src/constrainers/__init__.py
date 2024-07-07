@@ -24,7 +24,7 @@ def get_length_constrainer(
     """
     Returns a length constrainer given by the tokenized lengths of the texts
     """
-    tokenizer = get_tokenizer(provider, model_name)
+    tokenizer = get_tokenizer("text", provider, model_name)
     # Clip texts to `max_tokens`
     lengths = list(
         map(lambda x: min(len(tokenizer.encode(x)), max_tokens), texts)
