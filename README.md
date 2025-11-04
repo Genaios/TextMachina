@@ -283,4 +283,4 @@ Please install and use the [dev-tools](dev-tools) for correctly formatting the c
 
 ## 🏭 Commercial Purposes
 ---
-Please, contact stuart.winter-tear@genaios.ai and marc.franco@genaios.ai if you are interested in using TextMachina for commercial purposes.
+Please, contact francisco.rangel@genaios.ai if you are interested in using TextMachina for commercial purposes.
