@@ -284,3 +284,7 @@ Please install and use the [dev-tools](dev-tools) for correctly formatting the c
 ## 🏭 Commercial Purposes
 ---
 Please, contact francisco.rangel@genaios.ai if you are interested in using TextMachina for commercial purposes.
+
+## 💲Funding
+
+<img alt="This project has been partially funded by IVACE under expedient IMINOK/2023/121" src="./ivace.png">
